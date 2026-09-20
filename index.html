@@ -56,15 +56,6 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 .ring-txt b{font-size:22px;}
 .ring-txt div{font-size:12px; color:var(--dim); margin-top:2px;}
 
-.row-cards{display:flex; gap:12px; overflow-x:auto; padding-bottom:4px;}
-.row-cards::-webkit-scrollbar{display:none;}
-.stage{min-width:130px; background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; cursor:pointer;}
-.stage .ph{height:76px; background-size:cover; background-position:center;}
-.stage .info{padding:10px 12px;}
-.stage .info b{font-size:13px; display:block; font-family:'Playfair Display',serif; font-weight:700;}
-.stage .info span{font-size:10.5px; color:var(--dim);}
-.stage.done .ph{box-shadow:inset 0 0 0 1px rgba(206,162,77,.35);}
-
 .feature{background:radial-gradient(circle at 20% 0%,#2a2418,#151412); border:1px solid var(--line); border-radius:16px; padding:14px; margin-top:4px; cursor:pointer;}
 .feature .tag{font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; font-weight:600;}
 .feature h3{font-size:20px; margin:8px 0 6px; font-weight:600;}
@@ -108,13 +99,13 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 .prow:last-child{border-bottom:none;}
 .prow span{color:var(--dim);}
 
-/* Mapeamento exato das suas imagens locais na raiz do repositório */
+/* Imagens locais */
 .img-alinhador { background-image: url('alinhador.jpg'); }
 .img-consultorio { background-image: url('consultório.jpg'); }
 .img-agendamento2 { background-image: url('fotoagendamento2.jpg'); }
 .img-noagendamento { background-image: url('fotonoagendamento.jpg'); }
 
-/* Auth screens styling */
+/* Auth screens */
 .auth-wrap{display:flex; flex-direction:column; justify-content:center; height:100%; padding:30px 24px; text-align:center;}
 .auth-logo{font-size:32px; font-family:'Playfair Display',serif; color:var(--accent); margin-bottom:8px;}
 .auth-subtitle{font-size:13px; color:var(--dim); margin-bottom:30px;}
@@ -154,7 +145,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     <div class="scroll" style="padding-top:10px">
       <div class="input-group">
         <label>Nome Completo</label>
-        <input type="text" id="signupName" value="Usuário">
+        <input type="text" id="signupName" value="Marina Alves">
       </div>
       <div class="input-group">
         <label>E-mail</label>
@@ -176,11 +167,10 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
   <!-- HOME -->
   <div class="screen" data-name="home">
     <div class="topbar">
-      <div class="hello" style="text-transform:uppercase; letter-spacing:.1em; font-size:10px;">Bem vindo<b id="nameHome" contenteditable="true" spellcheck="false" style="font-family:'Playfair Display',serif; font-size:20px; letter-spacing:.06em; text-transform:none; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Marina Alves</b></div>
+      <div class="hello" style="text-transform:uppercase; letter-spacing:.1em; font-size:10px;">Boa noite<b id="nameHome" contenteditable="true" spellcheck="false" style="font-family:'Playfair Display',serif; font-size:20px; letter-spacing:.06em; text-transform:none; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Marina Alves</b></div>
       <div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div>
     </div>
     <div class="scroll">
-      <!-- alinhador.jpg na capa do aplicativo logo após o cadastro -->
       <div class="hero-photo img-alinhador" style="aspect-ratio:16/6; position:relative; margin-bottom:10px; background-size:cover; background-position:center; border-radius:14px;" onclick="openScreen('appt')">
         <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(9,11,11,0) 40%, rgba(9,11,11,.9) 100%); border-radius:14px; display:flex; align-items:flex-end; padding:10px 14px;">
           <div>
@@ -190,11 +180,12 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         </div>
       </div>
       <button class="cta" style="margin-top:0; margin-bottom:14px; padding:12px;" onclick="openScreen('appt')">AGENDAR AVALIAÇÃO</button>
+      
       <div class="card appt-card">
         <div>
           <div class="lbl">Próxima consulta</div>
           <div class="when">Qui, 24 Set · 15:00</div>
-          <div class="sub">Troca para etapa 12 · <span id="nameDoctorAppt">Dra. Costa</span></div>
+          <div class="sub">Troca para etapa 12 · <span id="nameDoctorAppt">Dra. Mirna Liz</span></div>
         </div>
         <button class="btn-ghost" onclick="openScreen('appt')">Ver</button>
       </div>
@@ -208,11 +199,16 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div class="ring-txt"><b>15h 20m</b><div>Meta diária: 20h — faltam 4h40</div></div>
       </div>
 
-      <div class="sect-title"><h3>Etapas do tratamento</h3><span onclick="openScreen('stageslist')">ver plano</span></div>
-      <div class="row-cards">
-        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-agendamento2"></div><div class="info"><b>Etapa 10</b><span>Concluída</span></div></div>
-        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-noagendamento"></div><div class="info"><b>Etapa 11</b><span>Em uso</span></div></div>
-        <div class="stage" onclick="openScreen('stage')"><div class="ph img-agendamento2"></div><div class="info"><b>Etapa 12</b><span>A partir de 24/09</span></div></div>
+      <div class="sect-title"><h3>Tratamento</h3><span onclick="openScreen('stageslist')">ver todas</span></div>
+      <div class="card" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="openScreen('stageslist')">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:18px;">🦷</div>
+          <div>
+            <div style="font-size:14px; font-weight:600;">Etapa Atual: 11 de 24</div>
+            <div style="font-size:11px; color:var(--dim);">Toque para gerenciar os quadros do plano</div>
+          </div>
+        </div>
+        <div style="color:var(--accent); font-size:16px;">›</div>
       </div>
 
       <div class="sect-title"><h3>Destaque da clínica</h3></div>
@@ -250,7 +246,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- CLÍNICA (consultório.jpg) -->
+  <!-- CLÍNICA -->
   <div class="screen" data-name="clinica">
     <div class="topbar"><div class="hello"><b>Clínica Alinha</b></div><div class="iconbtn">📍</div></div>
     <div class="scroll">
@@ -275,13 +271,13 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     <div class="topbar"><div class="hello"><b>Perfil</b></div><div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div></div>
     <div class="scroll">
       <div class="profile-head">
-        <div class="avatar">MA</div>
+        <div class="avatar" id="avatarInitials">MA</div>
         <div id="nameProfile" contenteditable="true" spellcheck="false" style="font-weight:600; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames('profile')">Marina Alves</div>
         <div style="font-size:12px; color:var(--dim)">Tratamento iniciado em Jan/2026</div>
       </div>
       <div class="plist">
         <div class="prow" onclick="openScreen('stageslist')" style="cursor:pointer"><span>Etapa atual</span>11 de 24 ›</div>
-        <div class="prow"><span>Ortodontista</span><span id="nameDoctor" contenteditable="true" spellcheck="false" style="outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Dra. Costa</span></div>
+        <div class="prow"><span>Ortodontista</span><span id="nameDoctor" contenteditable="true" spellcheck="false" style="outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Dra. Mirna Liz</span></div>
         <div class="prow"><span>Previsão de término</span>Mar/2027</div>
       </div>
       <div class="plist">
@@ -292,7 +288,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- NOVA PÁGINA: LISTA DE ETAPAS DO TRATAMENTO (usando fotoagendamento2 e fotonoagendamento) -->
+  <!-- QUADROS DE ETAPAS DO TRATAMENTO -->
   <div class="screen" data-name="stageslist">
     <div class="back-header"><div class="iconbtn" onclick="openScreen('home')">←</div><h2>Etapas do Tratamento</h2></div>
     <div class="scroll" style="padding-top:10px">
@@ -417,26 +413,41 @@ function handleSignup(){
   if(name) {
     document.getElementById('nameHome').textContent = name;
     document.getElementById('nameProfile').textContent = name;
+    updateInitials(name);
     localStorage.setItem('alinha_patient', name);
   }
   if(doctor) {
     document.getElementById('nameDoctor').textContent = doctor;
     document.getElementById('nameDoctorAppt').textContent = doctor;
+    document.getElementById('nameDoctorApptDetail').textContent = doctor.toLowerCase().startsWith('dra')||doctor.toLowerCase().startsWith('dr')? 'a '+doctor : doctor;
     localStorage.setItem('alinha_doctor', doctor);
   }
   switchTab('home');
 }
 
+function updateInitials(name){
+  try {
+    const parts = name.split(' ');
+    let init = parts[0][0];
+    if(parts.length > 1) init += parts[parts.length - 1][0];
+    document.getElementById('avatarInitials').textContent = init.toUpperCase();
+  } catch(e) {}
+}
+
 function saveNames(source){
   try{
-    let patient = document.getElementById('nameHome').textContent.trim() || 'Usuário';
+    let patient = document.getElementById('nameHome').textContent.trim() || 'Marina Alves';
     if(source==='profile') patient = document.getElementById('nameProfile').textContent.trim() || 'Marina Alves';
     const doctor = document.getElementById('nameDoctor').textContent.trim() || 'Dra. Mirna Liz';
+    
     document.getElementById('nameHome').textContent = patient;
     document.getElementById('nameProfile').textContent = patient;
+    updateInitials(patient);
+    
     document.getElementById('nameDoctor').textContent = doctor;
     document.getElementById('nameDoctorAppt').textContent = doctor;
     document.getElementById('nameDoctorApptDetail').textContent = doctor.toLowerCase().startsWith('dra')||doctor.toLowerCase().startsWith('dr')? 'a '+doctor : doctor;
+    
     localStorage.setItem('alinha_patient', patient);
     localStorage.setItem('alinha_doctor', doctor);
   }catch(e){ console.error('Storage error', e); }
@@ -444,8 +455,12 @@ function saveNames(source){
 
 try{
   const p = localStorage.getItem('alinha_patient');
-  const d = localStorage.getItem('alinha_doctor');
-  if(p){ document.getElementById('nameHome').textContent=p; document.getElementById('nameProfile').textContent=p; }
+  const d = localStorage.getItem('alinha_doctor') || 'Dra. Mirna Liz';
+  if(p){ 
+    document.getElementById('nameHome').textContent=p; 
+    document.getElementById('nameProfile').textContent=p; 
+    updateInitials(p);
+  }
   if(d){
     document.getElementById('nameDoctor').textContent=d;
     document.getElementById('nameDoctorAppt').textContent=d;
