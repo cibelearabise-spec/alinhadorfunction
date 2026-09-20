@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alinha — App do Paciente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --bg:#090b0b; --surface:#151918; --surface2:#202624; --line:#333335;
+  --text:#f5eedf; --dim:#aaa69c; --accent:#c9a45d; --accent-dark:#a8813a; --accent-ink:#1a1305;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background:#050505; min-height:100vh; display:flex; align-items:center; justify-content:center;
+  font-family:'DM Sans',system-ui,sans-serif; color:var(--text); padding:40px 16px;
+}
+h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-spacing:.01em;}
+.phone{
+  width:380px; height:780px; background:var(--bg); border-radius:44px; overflow:hidden;
+  position:relative; box-shadow:0 30px 80px rgba(0,0,0,.6); border:8px solid #05070a;
+}
+.statusbar{display:flex; justify-content:space-between; padding:14px 24px 4px; font-size:13px; color:var(--text); font-weight:600;}
+.screen{
+  position:absolute; inset:0; padding-top:38px; background:var(--bg);
+  display:flex; flex-direction:column; transform:translateX(100%); transition:transform .32s ease; opacity:0; pointer-events:none;
+}
+.screen.active{transform:translateX(0); opacity:1; pointer-events:auto; z-index:2;}
+.screen.base{transform:translateX(0); opacity:1;}
+.scroll{flex:1; overflow-y:auto; padding:14px 20px 90px;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* top bars */
+.topbar{display:flex; align-items:center; justify-content:space-between; padding:6px 20px 14px;}
+.hello{font-size:12px; color:var(--dim);}
+.hello b{color:var(--text); font-size:16px; display:block; margin-top:2px; letter-spacing:.3px;}
+.iconbtn{width:36px; height:36px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center; border:1px solid var(--line); cursor:pointer;}
+.back-header{display:flex; align-items:center; gap:12px; padding:6px 20px 10px;}
+.back-header h2{font-size:16px;}
+
+/* cards */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:12px 14px;}
+.appt-card{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;}
+.appt-card .lbl{font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.12em; margin-bottom:4px; font-weight:600;}
+.appt-card .when{font-size:14px; font-weight:600;}
+.appt-card .sub{font-size:12px; color:var(--dim); margin-top:2px;}
+.btn-ghost{border:1px solid var(--line); color:var(--text); background:transparent; padding:7px 14px; border-radius:10px; font-size:12px; cursor:pointer;}
+
+.sect-title{display:flex; justify-content:space-between; align-items:baseline; margin:14px 0 8px;}
+.sect-title h3{font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--dim); font-family:'Inter',sans-serif; font-weight:600;}
+.sect-title span{font-size:11px; color:var(--accent); cursor:pointer; text-transform:uppercase; letter-spacing:.06em;}
+
+.ring-wrap{display:flex; align-items:center; gap:16px; margin-bottom:6px;}
+.ring{width:88px; height:88px;}
+.ring-txt b{font-size:22px;}
+.ring-txt div{font-size:12px; color:var(--dim); margin-top:2px;}
+
+.row-cards{display:flex; gap:12px; overflow-x:auto; padding-bottom:4px;}
+.row-cards::-webkit-scrollbar{display:none;}
+.stage{min-width:120px; background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; cursor:pointer;}
+.stage .ph{height:66px; display:flex; align-items:center; justify-content:center; font-size:22px; background:radial-gradient(circle at 40% 30%,#2a2a2c,#131314);}
+.stage .info{padding:10px 12px;}
+.stage .info b{font-size:13px; display:block; font-family:'Playfair Display',serif; font-weight:700;}
+.stage .info span{font-size:10.5px; color:var(--dim);}
+.stage.done .ph{background:radial-gradient(circle at 40% 30%,#3a2f18,#161310); box-shadow:inset 0 0 0 1px rgba(206,162,77,.35);}
+
+.feature{background:radial-gradient(circle at 20% 0%,#2a2418,#151412); border:1px solid var(--line); border-radius:16px; padding:14px; margin-top:4px; cursor:pointer;}
+.feature .tag{font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; font-weight:600;}
+.feature h3{font-size:20px; margin:8px 0 6px; font-weight:600;}
+.feature p{font-size:12px; color:var(--dim); line-height:1.4;}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px;}
+.tile{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 10px; text-align:center; cursor:pointer;}
+.tile .em{font-size:20px; margin-bottom:6px;}
+.tile span{font-size:11.5px; color:var(--dim);}
+
+/* nav */
+.tabbar{position:absolute; bottom:0; left:0; right:0; height:76px; background:var(--surface); border-top:1px solid var(--line); display:flex; z-index:5; padding-bottom:14px;}
+.tab{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--dim); font-size:10.5px; cursor:pointer;}
+.tab.active{color:var(--accent);}
+.tab .dot{width:20px; height:20px;}
+
+/* timer screen */
+.timerwrap{display:flex; flex-direction:column; align-items:center; margin:26px 0 10px;}
+.timerring{width:200px; height:200px;}
+.timerbig{font-size:34px; font-weight:700; margin-top:-140px;}
+.timersub{font-size:12px; color:var(--dim); margin-top:4px;}
+.startbtn{margin-top:150px; background:var(--accent); color:var(--accent-ink); border:none; width:100%; padding:15px; border-radius:10px; font-weight:700; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing:.08em;}
+.bars{display:flex; align-items:flex-end; gap:10px; height:90px; margin-top:18px;}
+.bar{flex:1; background:var(--surface2); border-radius:6px; position:relative;}
+.bar i{position:absolute; bottom:0; left:0; right:0; background:var(--accent); border-radius:6px;}
+.bar span{position:absolute; bottom:-18px; left:0; right:0; text-align:center; font-size:10px; color:var(--dim);}
+
+/* detail / clinic detail */
+.hero-img{height:240px; background:radial-gradient(circle at 45% 35%,#2c2a24,#100f0d); display:flex; align-items:center; justify-content:center; font-size:60px; border:1px solid var(--line);}
+.detail-body{padding:20px;}
+.detail-body h2{font-size:24px; margin-bottom:8px; font-weight:700;}
+.detail-body p{font-size:13px; color:var(--dim); line-height:1.6; margin-bottom:16px; font-family:'Inter',sans-serif;}
+.chip{display:inline-block; background:transparent; border:1px solid var(--line); padding:6px 12px; border-radius:20px; font-size:10.5px; margin-right:6px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em;}
+.cta{background:var(--accent); color:var(--accent-ink); border:none; width:100%; padding:15px; border-radius:10px; font-weight:700; font-size:13px; margin-top:16px; cursor:pointer; text-transform:uppercase; letter-spacing:.08em;}
+.cta.secondary{background:transparent; color:var(--text); border:1px solid var(--line); margin-top:10px;}
+
+/* profile */
+.profile-head{display:flex; flex-direction:column; align-items:center; padding:10px 0 20px;}
+.avatar{width:74px; height:74px; border-radius:50%; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:10px; border:2px solid var(--accent);}
+.plist{background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; margin-top:14px;}
+.prow{display:flex; justify-content:space-between; padding:14px 16px; font-size:13px; border-bottom:1px solid var(--line);}
+.prow:last-child{border-bottom:none;}
+.prow span{color:var(--dim);}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="statusbar">
+    <span>09:41</span>
+    <span>5G</span>
+  </div>
+
+  <div class="screen base active" id="homeScreen">
+    <div class="topbar">
+      <div class="hello">Bem-vindo(a) <b>Cibele</b></div>
+      <div class="iconbtn" onclick="carregarDados()">🔄</div>
+    </div>
+    <div class="scroll">
+      <div class="card appt-card">
+        <div>
+          <div class="lbl">Próxima Consulta</div>
+          <div class="when" id="infoConsulta">A carregar...</div>
+          <div class="sub">Clínica Alinha</div>
+        </div>
+        <button class="btn-ghost">Detalhes</button>
+      </div>
+
+      <div class="sect-title">
+        <h3>Seu Progresso</h3>
+      </div>
+      <div class="card">
+        <div id="statusConexao" style="font-size: 12px; color: var(--dim);">Supabase pronto para uso.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab active">Início</div>
+  </div>
+</div>
+
+<script>
+  // Configuração do Supabase com as suas credenciais
+  const SUPABASE_URL = 'https://tgsyfhecpbsprcnzhdmt.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_RFfd6QKw6rZZXGpcEo7gHA_DKOU5zXL';
+
+  // Inicializa o cliente do Supabase
+  const { createClient } = supabase;
+  const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Exemplo de função para buscar dados da base de dados do Supabase
+  async function carregarDados() {
+    const el = document.getElementById('infoConsulta');
+    el.innerText = 'A atualizar...';
+
+    try {
+      // Substitua 'consultas' pelo nome real da sua tabela no Supabase
+      const { data, error } = await _supabase.from('consultas').select('*').limit(1);
+
+      if (error) {
+        throw error;
+      }
+
+      if (data && data.length > 0) {
+        el.innerText = data[0].data_consulta || 'Consulta agendada';
+      } else {
+        el.innerText = 'Nenhuma consulta encontrada';
+      }
+    } catch (err) {
+      console.error('Erro ao buscar dados:', err);
+      el.innerText = 'Erro ao carregar dados';
+    }
+  }
+
+  // Executa ao carregar a página
+  window.onload = () => {
+    console.log('Aplicação iniciada e Supabase conectado!');
+  };
+</script>
+
+</body>
+</html>
