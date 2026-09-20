@@ -182,6 +182,10 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <label>Quantas placas/etapas tem o tratamento?</label>
         <input type="number" id="signupTotalStages" value="24" min="1" max="60">
       </div>
+      <div class="input-group">
+        <label>Em qual etapa ela já está agora?</label>
+        <input type="number" id="signupCurrentStage" value="1" min="1" max="60">
+      </div>
       <div class="auth-error" id="signupError"></div>
       <button class="cta" id="signupBtn" onclick="handleSignup()">Concluir Cadastro</button>
       <button class="cta secondary" onclick="openScreen('login')">Já tenho conta</button>
@@ -550,6 +554,9 @@ async function handleSignup(){
   const pass = document.getElementById('signupPass').value;
   const doctor = document.getElementById('signupDoctor').value.trim() || 'Dra. Mirna Liz';
   const totalStages = parseInt(document.getElementById('signupTotalStages').value) || 24;
+  let currentStage = parseInt(document.getElementById('signupCurrentStage').value) || 1;
+  if(currentStage < 1) currentStage = 1;
+  if(currentStage > totalStages) currentStage = totalStages;
   const errEl = document.getElementById('signupError');
   errEl.textContent = '';
   const client = initSupabase();
@@ -561,7 +568,7 @@ async function handleSignup(){
   btn.disabled = false; btn.textContent = 'Concluir Cadastro';
   if(error){ errEl.textContent = error.message; return; }
   if(data.user){
-    try{ await client.from('profiles').upsert({id: data.user.id, patient_name: name || 'Paciente', doctor_name: doctor, total_stages: totalStages, current_stage: 1}); }catch(e){}
+    try{ await client.from('profiles').upsert({id: data.user.id, patient_name: name || 'Paciente', doctor_name: doctor, total_stages: totalStages, current_stage: currentStage}); }catch(e){}
   }
   errEl.style.color = 'var(--accent)';
   errEl.textContent = 'Conta criada! Se a confirmação por e-mail estiver ativa no seu projeto, confirme antes de entrar.';
@@ -630,4 +637,4 @@ function toggleTimer(){
 }
 </script>
 </body>
-  </html>
+      </html>
