@@ -7,10 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Supabase JS Client -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root{
   --bg:#090b0b; --surface:#151918; --surface2:#202624; --line:#333335;
@@ -41,133 +37,396 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 .hello{font-size:12px; color:var(--dim);}
 .hello b{color:var(--text); font-size:16px; display:block; margin-top:2px; letter-spacing:.3px;}
 .iconbtn{width:36px; height:36px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center; border:1px solid var(--line); cursor:pointer;}
+.back-header{display:flex; align-items:center; gap:12px; padding:6px 20px 10px;}
+.back-header h2{font-size:16px;}
 
 /* cards */
-.card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:12px;}
-.appt-card{display:flex; justify-content:space-between; align-items:center;}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:12px 14px;}
+.appt-card{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;}
 .appt-card .lbl{font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.12em; margin-bottom:4px; font-weight:600;}
 .appt-card .when{font-size:14px; font-weight:600;}
 .appt-card .sub{font-size:12px; color:var(--dim); margin-top:2px;}
 .btn-ghost{border:1px solid var(--line); color:var(--text); background:transparent; padding:7px 14px; border-radius:10px; font-size:12px; cursor:pointer;}
 
 .sect-title{display:flex; justify-content:space-between; align-items:baseline; margin:14px 0 8px;}
-.sect-title h3{font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--dim); font-weight:600;}
+.sect-title h3{font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--dim); font-family:'Inter',sans-serif; font-weight:600;}
+.sect-title span{font-size:11px; color:var(--accent); cursor:pointer; text-transform:uppercase; letter-spacing:.06em;}
 
-/* login screen style */
-.login-screen { padding: 30px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
-.logo-badge { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); margin-bottom: 12px; }
-.login-tabs { display: flex; width: 100%; gap: 8px; margin: 24px 0; background: var(--surface); padding: 4px; border-radius: 12px; border: 1px solid var(--line); }
-.ltab { flex: 1; padding: 10px; background: transparent; border: none; color: var(--dim); border-radius: 8px; font-weight: 600; cursor: pointer; }
-.ltab.active { background: var(--surface2); color: var(--text); border: 1px solid var(--line); }
-.form-group { width: 100%; text-align: left; margin-bottom: 14px; }
-.form-group label { font-size: 11px; color: var(--dim); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .08em; }
-.form-group input { width: 100%; background: var(--surface); border: 1px solid var(--line); padding: 12px; border-radius: 10px; color: var(--text); font-family: inherit; }
-.main-btn { background: var(--accent); color: var(--accent-ink); border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: .08em; margin-top: 10px; }
+.ring-wrap{display:flex; align-items:center; gap:16px; margin-bottom:6px;}
+.ring{width:88px; height:88px;}
+.ring-txt b{font-size:22px;}
+.ring-txt div{font-size:12px; color:var(--dim); margin-top:2px;}
+
+.row-cards{display:flex; gap:12px; overflow-x:auto; padding-bottom:4px;}
+.row-cards::-webkit-scrollbar{display:none;}
+.stage{min-width:130px; background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; cursor:pointer;}
+.stage .ph{height:76px; background-size:cover; background-position:center;}
+.stage .info{padding:10px 12px;}
+.stage .info b{font-size:13px; display:block; font-family:'Playfair Display',serif; font-weight:700;}
+.stage .info span{font-size:10.5px; color:var(--dim);}
+.stage.done .ph{box-shadow:inset 0 0 0 1px rgba(206,162,77,.35);}
+
+.feature{background:radial-gradient(circle at 20% 0%,#2a2418,#151412); border:1px solid var(--line); border-radius:16px; padding:14px; margin-top:4px; cursor:pointer;}
+.feature .tag{font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; font-weight:600;}
+.feature h3{font-size:20px; margin:8px 0 6px; font-weight:600;}
+.feature p{font-size:12px; color:var(--dim); line-height:1.4;}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px;}
+.tile{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 10px; text-align:center; cursor:pointer;}
+.tile .em{font-size:20px; margin-bottom:6px;}
+.tile span{font-size:11.5px; color:var(--dim);}
 
 /* nav */
 .tabbar{position:absolute; bottom:0; left:0; right:0; height:76px; background:var(--surface); border-top:1px solid var(--line); display:flex; z-index:5; padding-bottom:14px;}
 .tab{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--dim); font-size:10.5px; cursor:pointer;}
 .tab.active{color:var(--accent);}
+.tab .dot{width:20px; height:20px;}
+
+/* timer screen */
+.timerwrap{display:flex; flex-direction:column; align-items:center; margin:26px 0 10px;}
+.timerring{width:200px; height:200px;}
+.timerbig{font-size:34px; font-weight:700; margin-top:-140px;}
+.timersub{font-size:12px; color:var(--dim); margin-top:4px;}
+.startbtn{margin-top:150px; background:var(--accent); color:var(--accent-ink); border:none; width:100%; padding:15px; border-radius:10px; font-weight:700; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing:.08em;}
+.bars{display:flex; align-items:flex-end; gap:10px; height:90px; margin-top:18px;}
+.bar{flex:1; background:var(--surface2); border-radius:6px; position:relative;}
+.bar i{position:absolute; bottom:0; left:0; right:0; background:var(--accent); border-radius:6px;}
+.bar span{position:absolute; bottom:-18px; left:0; right:0; text-align:center; font-size:10px; color:var(--dim);}
+
+/* detail / clinic detail */
+.hero-img{height:240px; background-size:cover; background-position:center; border:1px solid var(--line);}
+.detail-body{padding:20px;}
+.detail-body h2{font-size:24px; margin-bottom:8px; font-weight:700;}
+.detail-body p{font-size:13px; color:var(--dim); line-height:1.6; margin-bottom:16px; font-family:'Inter',sans-serif;}
+.chip{display:inline-block; background:transparent; border:1px solid var(--line); padding:6px 12px; border-radius:20px; font-size:10.5px; margin-right:6px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em;}
+.cta{background:var(--accent); color:var(--accent-ink); border:none; width:100%; padding:15px; border-radius:10px; font-weight:700; font-size:13px; margin-top:16px; cursor:pointer; text-transform:uppercase; letter-spacing:.08em;}
+.cta.secondary{background:transparent; color:var(--text); border:1px solid var(--line); margin-top:10px;}
+
+/* profile */
+.profile-head{display:flex; flex-direction:column; align-items:center; padding:10px 0 20px;}
+.avatar{width:74px; height:74px; border-radius:50%; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:10px; border:2px solid var(--accent);}
+.plist{background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; margin-top:14px;}
+.prow{display:flex; justify-content:space-between; padding:14px 16px; font-size:13px; border-bottom:1px solid var(--line);}
+.prow:last-child{border-bottom:none;}
+.prow span{color:var(--dim);}
+
+/* Imagens customizadas fornecidas */
+.img-clinica { background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4QGHaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA0LjQuMC1FeGl2MiI+CiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLS1zeW50YXgtbnMiPgogIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICB4bWxuczppcHRjRXh0PSJodHRwOi8vaXB0Yy5vcmcvc3RkL0lwdGM0eG1wRXh0LzIwMDgtMDItMjkvIgogICBpcHRjRXh0OkRpZ2l0YWxTb3VyY2VUeXBlPSJodHRwOi8vY3YuaXB0Yy5vcmcvbmV3c2NvZGVzL2RpZ2l0YWxzb3VyY2V0eXBlL3RyYWluZWRBbGdvcml0aG1pY01lZGlhIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgr/7QCEUGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAGgcAigAYkZCTUQwYTAwMGFiZDAzMDAwMGU4ODEwMDAwZDhlMTAwMDBiY2YwMDAwMDc5MDEwMTAwMDMxZjAxMDA5Y2EzMDEwMDEyYzAwMTAwYTlkNTAxMDBhMGU4MDEwMDk3YWQwMjAwAP/bAIQABQYGCwgLCwsLCw0LCwsNDg4NDQ4ODw0ODg4NDxAQEBEREBAQEA8TEhMPEBETFBQTERMWFhYTFhUVFhkWGRYWEgEFBQUKBwoICQkICwgKCAsKCgkJCgoMCQoJCgkMDQsKCwsKCw0MCwsICwsMDAwNDQwMDQoLCg0MDQ0MExQTExOc/8IAEQgFAAeAAwEiAAIRAQMRAf/EAP8AAAIDAQEBAQAAAAAAAAAAAAECAAMEBQYHCAEBAQEBAQEBAAAAAAAAAAAAAAECAwQFBhAAAgIBAwMDBAICAwEBAQAAAAECEQMEEBITICEFMDEUIkBQMmAjQRUzcCRCNBEAAgIBAwMDBAEEAgEDBQAAAAECERADEiAhMDEEQEETUFFhIhRgcYEyobFCwfAFI1KR0RIAAQIDBgQDBQcDAwMDBQAAAQARAiExEBIgQVFhAyIwcTJAgRNQYJGhQlJicLHB0SMzcoLh8ICSskOQ8VNjorDQEwADAAIBBAEEAgIDAQEBAAAAAREQITEgQVFhcTBAgZGhscHRUOHwYPFw/9oADAMBAAIRAxEAAAH5UUONEx5oPDmsRM6IgBALHggwCkWJchCuoFIuQQcaQysRCAwVWUAk1kQxVkiCSQWUq5UxZFM0QJKRARStKCLmQSyCQkkBDLBIVEIJJEkkIRCAwAZagMJJCSQkMBDAQgkkJJAiQhEJJAkFIQakkJJAwQMEsMEDJAyQkggiCiJIkkqGQkgJJCEGWERJBFkgUgvFbXWS1XO2KrSTUgIWQjwMS5NeNLeb8bWaTnWSrbVZzs/Szbxzqd9XTGCrfRvGYW16yJGVzY2allj5tZsM1WLURLEa26xL8aQXNLmr1VWZatNWs500VbxVIljhRRWBJIFMkIGIosaKpc5nOgRTLTVRsi1y2FYuOVE0PWRtIlqaxoplqlYsFVC4WZ1vSymWASMKEkSAxYJDfYlvLoTJnUZCNEUdVFjFIWRIOqrYyhUkE1FVpYHjxqxMojQSMUrlWxKSNLFhlKHAkIiEQYoyuVORgkpEWoALYItGAkkiQhgBgLCLDBCSAkkJJCSQgIqSQkkJCAyQkjABlkBEQGKIQSSEkgSCkklSqjISQiEQYwCYSEgkgJJCSQkMIAIJCSQkkAJDEQkkJAkEpIJIQSAxEJBIQSSEkEIJCSQkIBDLAyQkkiCQkkIJJEkkJICQSQkkEkCQkkJEkkJICSSBkkJJJCSAkkgJJCSQn/9k='); }
+.img-stage10 { background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4QGHaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA0LjQuMC1FeGl2MiI+CiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLS1zeW50YXgtbnMiPgogIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICB4bWxuczppcHRjRXh0PSJodHRwOi8vaXB0Yy5vcmcvc3RkL0lwdGM0eG1wRXh0LzIwMDgtMDItMjkvIgogICBpcHRjRXh0OkRpZ2l0YWxTb3VyY2VUeXBlPSJodHRwOi8vY3YuaXB0Yy5vcmcvbmV3c2NvZGVzL2RpZ2l0YWxzb3VyY2V0eXBlL3RyYWluZWRBbGdvcml0aG1pY01lZGlhIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgr/7QCEUGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAGgcAigAYkZCTUQwYTAwMGFiZDAzMDAwMGU4ODEwMDAwZDhlMTAwMDBiY2YwMDAwMDc5MDEwMTAwMDMxZjAxMDA5Y2EzMDEwMDEyYzAwMTAwYTlkNTAxMDBhMGU4MDEwMDk3YWQwMjAwAP/bAIQABQYGCwgLCwsLCw0LCwsNDg4NDQ4ODw0ODg4NDxAQEBEREBAQEA8TEhMPEBETFBQTERMWFhYTFhUVFhkWGRYWEgEFBQUKBwoICQkICwgKCAsKCgkJCgoMCQoJCgkMDQsKCwsKCw0MCwsICwsMDAwNDQwMDQoLCg0MDQ0MExQTExOc/8IAEQgFAAeAAwEiAAIRAQMRAf/EAP8AAAIDAQEBAQAAAAAAAAAAAAECAAMEBQYHCAEBAQEBAQEBAAAAAAAAAAAAAAECAwQFBhAAAgIBAwMDBAICAwEBAQAAAAECEQMEEBITICEFMDEUIkBQMmAjQRUzcCRCNBEAAgIBAwMDBAEEAgEDBQAAAAECERADEiAhMDEEQEETUFFhIhRgcYEyobFCwfAFI1KR0RIAAQIDBgQDBQcDAwMDBQAAAQARAiExEBIgQVFhAyIwcTJAgRNQYJGhQlJicLHB0SMzcoLh8ICSskOQ8VNjorDQEwADAAIBBAEEAgIDAQEBAAAAAREQITEgQVFhcTBAgZGhscHRUOHwYPFw/9oADAMBAAIRAxEAAAH5UUONEx5oPDmsRM6IgBALHggwCkWJchCuoFIuQQcaQysRCAwVWUAk1kQxVkiCSQWUq5UxZFM0QJKRARStKCLmQSyCQkkBDLBIVEIJJEkkIRCAwAZagMJJCSQkMBDAQgkkJJAiQhEJJAkFIQakkJJAwQMEsMEDJAyQkggiCiJIkkqGQkgJJCEGWERJBFkgUgvFbXWS1XO2KrSTUgIWQjwMS5NeNLeb8bWaTnWSrbVZzs/Szbxzqd9XTGCrfRvGYW16yJGVzY2allj5tZsM1WLURLEa26xL8aQXNLmr1VWZatNWs500VbxVIljhRRWBJIFMkIGIosaKpc5nOgRTLTVRsi1y2FYuOVE0PWRtIlqaxoplqlYsFVC4WZ1vSymWASMKEkSAxYJDfYlvLoTJnUZCNEUdVFjFIWRIOqrYyhUkE1FVpYHjxqxMojQSMUrlWxKSNLFhlKHAkIiEQYoyuVORgkpEWoALYItGAkkiQhgBgLCLDBCSAkkJJCSQgIqSQkkJCAyQkjABlkBEQGKIQSSEkgSCkklSqjISQiEQYwCYSEgkgJJCSQkMIAIJCSQkkAJDEQkkJAkEpIJIQSAxEJBIQSSEkEIJCSQkIBDLAyQkkiCQkkIJJEkkJICQSQkkEkCQkkJEkkJICSSBkkJJJCSAkkgJJCSQn/9k='); }
+.img-stage11 { background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA='); }
+.img-stage12 { background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA='); }
+
+/* Auth screens styling */
+.auth-wrap{display:flex; flex-direction:column; justify-content:center; height:100%; padding:30px 24px; text-align:center;}
+.auth-logo{font-size:32px; font-family:'Playfair Display',serif; color:var(--accent); margin-bottom:8px;}
+.auth-subtitle{font-size:13px; color:var(--dim); margin-bottom:30px;}
+.input-group{margin-bottom:14px; text-align:left;}
+.input-group label{font-size:11px; color:var(--dim); display:block; margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em;}
+.input-group input{width:100%; background:var(--surface); border:1px solid var(--line); padding:12px 14px; border-radius:10px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none;}
+.input-group input:focus{border-color:var(--accent);}
+.auth-link{margin-top:16px; font-size:12px; color:var(--dim); cursor:pointer;}
+.auth-link span{color:var(--accent); font-weight:600;}
 </style>
 </head>
 <body>
+<div class="phone" id="phone">
+  <div class="statusbar"><span>9:41</span><span>●●● 📶 🔋</span></div>
 
-<div class="phone">
-  <div class="statusbar">
-    <span>09:41</span>
-    <span>5G</span>
-  </div>
-
-  <!-- TELA DE LOGIN / CADASTRO -->
-  <div class="screen active" id="loginScreen">
-    <div class="login-screen">
-      <div class="logo-badge">✦</div>
-      <h1 style="font-size: 24px; margin-bottom: 4px;">ALINE</h1>
-      <p style="font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: .15em; margin-bottom: 20px;">Alinhadores Invisíveis</p>
-      
-      <div class="login-tabs">
-        <button class="ltab active">Entrar</button>
-        <button class="ltab" onclick="irParaApp()">Cadastrar</button>
-      </div>
-
-      <div class="form-group">
+  <!-- LOGIN SCREEN -->
+  <div class="screen active" data-name="login">
+    <div class="auth-wrap">
+      <div class="auth-logo">Alinha</div>
+      <div class="auth-subtitle">Seu tratamento ortodôntico inteligente</div>
+      <div class="input-group">
         <label>E-mail</label>
-        <input type="email" value="voce@email.com">
+        <input type="email" id="loginEmail" value="marina@alves.com">
       </div>
-      
-      <div class="form-group">
+      <div class="input-group">
         <label>Senha</label>
-        <input type="password" value="********">
+        <input type="password" id="loginPass" value="123456">
       </div>
-
-      <button class="main-btn" onclick="irParaApp()">Entrar</button>
+      <button class="cta" onclick="handleLogin()">Entrar</button>
+      <div class="auth-link" onclick="openScreen('signup')">Não tem uma conta? <span>Cadastre-se</span></div>
     </div>
   </div>
 
-  <!-- TELA PRINCIPAL DO APP -->
-  <div class="screen" id="homeScreen">
+  <!-- SIGNUP SCREEN -->
+  <div class="screen" data-name="signup">
+    <div class="back-header"><div class="iconbtn" onclick="openScreen('login')">←</div><h2>Criar Conta</h2></div>
+    <div class="scroll" style="padding-top:10px">
+      <div class="input-group">
+        <label>Nome Completo</label>
+        <input type="text" id="signupName" value="Marina Alves">
+      </div>
+      <div class="input-group">
+        <label>E-mail</label>
+        <input type="email" id="signupEmail" value="marina@alves.com">
+      </div>
+      <div class="input-group">
+        <label>Senha</label>
+        <input type="password" id="signupPass" value="123456">
+      </div>
+      <div class="input-group">
+        <label>Nome do Ortodontista</label>
+        <input type="text" id="signupDoctor" value="Dra. Costa">
+      </div>
+      <button class="cta" onclick="handleSignup()">Concluir Cadastro</button>
+      <button class="cta secondary" onclick="openScreen('login')">Já tenho conta</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" data-name="home">
     <div class="topbar">
-      <div class="hello">Bem-vindo(a) <b id="nomeUsuario">Cibele</b></div>
-      <div class="iconbtn" onclick="carregarDados()">🔄</div>
+      <div class="hello" style="text-transform:uppercase; letter-spacing:.1em; font-size:10px;">Boa noite<b id="nameHome" contenteditable="true" spellcheck="false" style="font-family:'Playfair Display',serif; font-size:20px; letter-spacing:.06em; text-transform:none; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Marina Alves</b></div>
+      <div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div>
     </div>
     <div class="scroll">
+      <div class="hero-photo img-clinica" style="aspect-ratio:16/6; position:relative; margin-bottom:10px; background-size:cover; background-position:center;" onclick="openScreen('appt')">
+        <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(9,11,11,0) 40%, rgba(9,11,11,.9) 100%); border-radius:16px; display:flex; align-items:flex-end; padding:10px 14px;">
+          <div>
+            <div style="font-size:9px; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; font-weight:600;">Sorriso perfeito, sem esforço</div>
+            <div style="font-family:'Playfair Display',serif; font-size:16px; margin-top:2px;">Agendar avaliação</div>
+          </div>
+        </div>
+      </div>
+      <button class="cta" style="margin-top:0; margin-bottom:14px; padding:12px;" onclick="openScreen('appt')">AGENDAR AVALIAÇÃO</button>
       <div class="card appt-card">
         <div>
-          <div class="lbl">Próxima Consulta</div>
-          <div class="when" id="infoConsulta">A carregar...</div>
-          <div class="sub">Clínica Alinha</div>
+          <div class="lbl">Próxima consulta</div>
+          <div class="when">Qui, 24 Set · 15:00</div>
+          <div class="sub">Troca para etapa 12 · <span id="nameDoctorAppt">Dra. Costa</span></div>
         </div>
-        <button class="btn-ghost">Detalhes</button>
+        <button class="btn-ghost" onclick="openScreen('appt')">Ver</button>
       </div>
 
-      <div class="sect-title">
-        <h3>Seu Progresso</h3>
+      <div class="sect-title"><h3>Uso de hoje</h3><span onclick="switchTab('uso')">detalhes</span></div>
+      <div class="ring-wrap card" onclick="switchTab('uso')" style="cursor:pointer">
+        <svg class="ring" viewBox="0 0 36 36">
+          <path d="M18 2a16 16 0 1 1 0 32 16 16 0 1 1 0-32" fill="none" stroke="#333335" stroke-width="3"/>
+          <path d="M18 2a16 16 0 1 1 0 32 16 16 0 1 1 0-32" fill="none" stroke="#c9a45d" stroke-width="3" stroke-dasharray="76,100" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-txt"><b>15h 20m</b><div>Meta diária: 20h — faltam 4h40</div></div>
       </div>
-      <div class="card">
-        <div id="statusConexao" style="font-size: 12px; color: var(--dim);">Supabase conectado com sucesso.</div>
-      </div>
-    </div>
 
-    <div class="tabbar">
-      <div class="tab active">Início</div>
+      <div class="sect-title"><h3>Etapas do tratamento</h3><span onclick="switchTab('perfil')">ver plano</span></div>
+      <div class="row-cards">
+        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-stage10"></div><div class="info"><b>Etapa 10</b><span>Concluída</span></div></div>
+        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-stage11"></div><div class="info"><b>Etapa 11</b><span>Em uso</span></div></div>
+        <div class="stage" onclick="openScreen('stage')"><div class="ph img-stage12"></div><div class="info"><b>Etapa 12</b><span>A partir de 24/09</span></div></div>
+      </div>
+
+      <div class="sect-title"><h3>Destaque da clínica</h3></div>
+      <div class="feature" onclick="openScreen('clinicdetail')">
+        <div class="tag">Novidade</div>
+        <h3>Clareamento pós-tratamento</h3>
+        <p>Sessão exclusiva para pacientes Alinha ao concluir o tratamento.</p>
+      </div>
     </div>
+  </div>
+
+  <!-- USO DIÁRIO -->
+  <div class="screen" data-name="uso">
+    <div class="topbar"><div class="hello"><b>Uso diário</b></div><div class="iconbtn">📅</div></div>
+    <div class="scroll">
+      <div class="timerwrap">
+        <svg class="timerring" viewBox="0 0 36 36">
+          <path d="M18 2a16 16 0 1 1 0 32 16 16 0 1 1 0-32" fill="none" stroke="#333335" stroke-width="2.5"/>
+          <path d="M18 2a16 16 0 1 1 0 32 16 16 0 1 1 0-32" fill="none" stroke="#c9a45d" stroke-width="2.5" stroke-dasharray="76,100" stroke-linecap="round"/>
+        </svg>
+        <div class="timerbig" id="timerval">15:20:00</div>
+        <div class="timersub">alinhador em uso desde 07:10</div>
+        <button class="startbtn" id="toggleBtn" onclick="toggleTimer()">Pausar contagem</button>
+      </div>
+      <div class="sect-title" style="margin-top:8px"><h3>Últimos 7 dias</h3><span>média 19h</span></div>
+      <div class="bars">
+        <div class="bar" style="height:100%"><i style="height:85%"></i><span>S</span></div>
+        <div class="bar" style="height:100%"><i style="height:92%"></i><span>T</span></div>
+        <div class="bar" style="height:100%"><i style="height:70%"></i><span>Q</span></div>
+        <div class="bar" style="height:100%"><i style="height:95%"></i><span>Q</span></div>
+        <div class="bar" style="height:100%"><i style="height:88%"></i><span>S</span></div>
+        <div class="bar" style="height:100%"><i style="height:60%"></i><span>S</span></div>
+        <div class="bar" style="height:100%"><i style="height:76%"></i><span>D</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLÍNICA -->
+  <div class="screen" data-name="clinica">
+    <div class="topbar"><div class="hello"><b>Clínica Alinha</b></div><div class="iconbtn">📍</div></div>
+    <div class="scroll">
+      <div class="hero-img img-clinica" onclick="openScreen('clinicdetail')" style="border-radius:16px; height:180px; margin-bottom:12px;"></div>
+      <div class="grid2" style="margin-top:8px">
+        <div class="tile" onclick="openScreen('clinicdetail')"><div class="em">✨</div><span>Clareamento</span></div>
+        <div class="tile" onclick="openScreen('clinicdetail')"><div class="em">🦷</div><span>Alinhadores</span></div>
+        <div class="tile" onclick="openScreen('clinicdetail')"><div class="em">📸</div><span>Escaneamento 3D</span></div>
+        <div class="tile" onclick="openScreen('clinicdetail')"><div class="em">🪥</div><span>Manutenção</span></div>
+      </div>
+      <div class="sect-title"><h3>Sobre a unidade</h3></div>
+      <div class="feature" onclick="openScreen('clinicdetail')">
+        <div class="tag">Tecnologia digital</div>
+        <h3>Escaneamento intraoral</h3>
+        <p>Acompanhamento digital das suas etapas, sem moldes de silicone.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div class="screen" data-name="perfil">
+    <div class="topbar"><div class="hello"><b>Perfil</b></div><div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div></div>
+    <div class="scroll">
+      <div class="profile-head">
+        <div class="avatar">MA</div>
+        <div id="nameProfile" contenteditable="true" spellcheck="false" style="font-weight:600; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames('profile')">Marina Alves</div>
+        <div style="font-size:12px; color:var(--dim)">Tratamento iniciado em Jan/2026</div>
+      </div>
+      <div class="plist">
+        <div class="prow"><span>Etapa atual</span>11 de 24</div>
+        <div class="prow"><span>Ortodontista</span><span id="nameDoctor" contenteditable="true" spellcheck="false" style="outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Dra. Costa</span></div>
+        <div class="prow"><span>Previsão de término</span>Mar/2027</div>
+      </div>
+      <div class="plist">
+        <div class="prow" onclick="openScreen('appt')" style="cursor:pointer"><span>Consultas</span>›</div>
+        <div class="prow" style="cursor:pointer"><span>Pagamentos</span>›</div>
+        <div class="prow" style="cursor:pointer"><span>Notificações</span>›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE DETAIL -->
+  <div class="screen" data-name="stage">
+    <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Etapa 12</h2></div>
+    <div class="scroll" style="padding-top:6px">
+      <div class="hero-img img-stage12" style="border-radius:16px; height:240px;"></div>
+      <div class="detail-body" style="padding:20px 0">
+        <h2>Etapa 12 de 24</h2>
+        <p>Inicia em 24/09. Use por no mínimo 20 a 22 horas por dia para manter o cronograma previsto pela sua ortodontista.</p>
+        <span class="chip">20-22h/dia</span><span class="chip">Trocar em 14 dias</span>
+        <button class="cta" onclick="switchTab('uso'); close_()">Iniciar contagem de uso</button>
+        <button class="cta secondary" onclick="close_()">Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPT DETAIL -->
+  <div class="screen" data-name="appt">
+    <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Consulta</h2></div>
+    <div class="scroll" style="padding-top:6px">
+      <div class="hero-img img-clinica" style="border-radius:16px"></div>
+      <div class="detail-body" style="padding:20px 0">
+        <h2>Troca para etapa 12</h2>
+        <p>Quinta-feira, 24 de setembro às 15:00 com <span id="nameDoctorApptDetail">a Dra. Costa</span>, unidade Setor Bueno. Traga o alinhador da etapa 11 para revisão.</p>
+        <span class="chip">30 min</span><span class="chip">Setor Bueno</span>
+        <button class="cta" onclick="close_()">Confirmar presença</button>
+        <button class="cta secondary" onclick="close_()">Reagendar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLINIC DETAIL -->
+  <div class="screen" data-name="clinicdetail">
+    <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Clareamento pós-tratamento</h2></div>
+    <div class="scroll" style="padding-top:6px">
+      <div class="hero-img img-clinica" style="border-radius:16px; height:240px;"></div>
+      <div class="detail-body" style="padding:20px 0">
+        <h2>Clareamento pós-tratamento</h2>
+        <p>Sessão de clareamento a laser oferecida aos pacientes que concluem o tratamento com alinhadores dentro do prazo previsto.</p>
+        <span class="chip">45 min</span><span class="chip">Gratuito na conclusão</span>
+        <button class="cta" onclick="close_()">Agendar sessão</button>
+        <button class="cta secondary" onclick="close_()">Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar" id="tabbar" style="display:none;">
+    <div class="tab active" data-tab="home" onclick="switchTab('home')"><span>🏠</span>Início</div>
+    <div class="tab" data-tab="uso" onclick="switchTab('uso')"><span>⏱️</span>Uso diário</div>
+    <div class="tab" data-tab="clinica" onclick="switchTab('clinica')"><span>🏥</span>Clínica</div>
+    <div class="tab" data-tab="perfil" onclick="switchTab('perfil')"><span>👤</span>Perfil</div>
   </div>
 </div>
 
 <script>
-  // Configuração do Supabase com as suas chaves
-  const SUPABASE_URL = 'https://tgsyfhecpbsprcnzhdmt.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_RFfd6QKw6rZZXGpcEo7gHA_DKOU5zXL';
+const mainTabs=['home','uso','clinica','perfil'];
+const authScreens=['login','signup'];
 
-  const { createClient } = supabase;
-  const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function switchTab(name){
+  document.querySelectorAll('.screen').forEach(s=>{
+    if(mainTabs.includes(s.dataset.name)) s.classList.toggle('active', s.dataset.name===name);
+    else s.classList.remove('active');
+  });
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  document.getElementById('tabbar').style.display='flex';
+}
 
-  function irParaApp() {
-    document.getElementById('loginScreen').classList.remove('active');
-    document.getElementById('homeScreen').classList.add('active');
-    carregarDados();
+function openScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.screen[data-name="'+name+'"]').classList.add('active');
+  
+  if(authScreens.includes(name)){
+    document.getElementById('tabbar').style.display='none';
+  } else if(mainTabs.includes(name)){
+    document.getElementById('tabbar').style.display='flex';
+  } else {
+    // Para telas secundárias (detalhes), ocultamos a barra inferior se necessário ou mantemos limpo
+    document.getElementById('tabbar').style.display='none';
   }
+}
+function close_(){ switchTab('home'); }
 
-  async function carregarDados() {
-    const el = document.getElementById('infoConsulta');
-    el.innerText = 'A atualizar...';
+function handleLogin(){
+  switchTab('home');
+}
 
-    try {
-      const { data, error } = await _supabase.from('consultas').select('*').limit(1);
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        el.innerText = data[0].data_consulta || 'Consulta agendada';
-      } else {
-        el.innerText = 'Nenhuma consulta encontrada';
-      }
-    } catch (err) {
-      console.error('Erro ao buscar dados:', err);
-      el.innerText = 'Erro ao carregar dados';
-    }
+function handleSignup(){
+  const name = document.getElementById('signupName').value.trim();
+  const doctor = document.getElementById('signupDoctor').value.trim();
+  if(name) {
+    document.getElementById('nameHome').textContent = name;
+    document.getElementById('nameProfile').textContent = name;
+    localStorage.setItem('alinha_patient', name);
   }
+  if(doctor) {
+    document.getElementById('nameDoctor').textContent = doctor;
+    document.getElementById('nameDoctorAppt').textContent = doctor;
+    localStorage.setItem('alinha_doctor', doctor);
+  }
+  switchTab('home');
+}
+
+function saveNames(source){
+  try{
+    let patient = document.getElementById('nameHome').textContent.trim() || 'Usuário';
+    if(source==='profile') patient = document.getElementById('nameProfile').textContent.trim() || 'Bem vindo usuário';
+    const doctor = document.getElementById('nameDoctor').textContent.trim() || 'Dra. Mirna Liz';
+    document.getElementById('nameHome').textContent = patient;
+    document.getElementById('nameProfile').textContent = patient;
+    document.getElementById('nameDoctor').textContent = doctor;
+    document.getElementById('nameDoctorAppt').textContent = doctor;
+    document.getElementById('nameDoctorApptDetail').textContent = doctor.toLowerCase().startsWith('dra')||doctor.toLowerCase().startsWith('dr')? 'a '+doctor : doctor;
+    localStorage.setItem('alinha_patient', patient);
+    localStorage.setItem('alinha_doctor', doctor);
+  }catch(e){ console.error('Storage error', e); }
+}
+
+try{
+  const p = localStorage.getItem('alinha_patient');
+  const d = localStorage.getItem('alinha_doctor');
+  if(p){ document.getElementById('nameHome').textContent=p; document.getElementById('nameProfile').textContent=p; }
+  if(d){
+    document.getElementById('nameDoctor').textContent=d;
+    document.getElementById('nameDoctorAppt').textContent=d;
+    document.getElementById('nameDoctorApptDetail').textContent = d.toLowerCase().startsWith('dra')||d.toLowerCase().startsWith('dr')? 'a '+d : d;
+  }
+}catch(e){ console.error('Storage error', e); }
+
+let running=true, seconds=15*3600+20*60;
+function fmt(s){const h=String(Math.floor(s/3600)).padStart(2,'0'),m=String(Math.floor(s%3600/60)).padStart(2,'0'),sec=String(s%60).padStart(2,'0');return h+':'+m+':'+sec;}
+setInterval(()=>{ if(running){ seconds++; const el=document.getElementById('timerval'); if(el) el.textContent=fmt(seconds); } },1000);
+function toggleTimer(){
+  running=!running;
+  document.getElementById('toggleBtn').textContent = running? 'Pausar contagem' : 'Retomar contagem';
+}
 </script>
-
 </body>
 </html>
