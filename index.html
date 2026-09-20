@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Alinha — App do Paciente</title>
+<title>Mirna Liz Aligner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -117,16 +117,32 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 .auth-link{margin-top:16px; font-size:12px; color:var(--dim); cursor:pointer;}
 .auth-link span{color:var(--accent); font-weight:600;}
 .auth-error{color:#e08585; font-size:12px; min-height:16px; text-align:left; margin-top:2px; margin-bottom:8px;}
+
+/* Splash */
+.spin-wrap{width:130px; height:130px; margin:0 auto; perspective:700px;}
+.spin-photo{width:100%; height:100%; border-radius:50%; background-size:cover; background-position:center; animation:spinY 2.4s linear infinite; box-shadow:0 0 50px rgba(201,164,93,.3), inset 0 0 0 1px rgba(245,238,223,.18);}
+@keyframes spinY{ from{transform:rotateY(0deg);} to{transform:rotateY(360deg);} }
+.splash-title{font-family:'Playfair Display',serif; font-size:22px; margin-top:24px; letter-spacing:.04em;}
+.splash-sub{font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.24em; margin-top:4px;}
 </style>
 </head>
 <body>
 <div class="phone" id="phone">
   <div class="statusbar"><span>9:41</span><span>●●● 📶 🔋</span></div>
 
+  <!-- SPLASH -->
+  <div class="screen active" data-name="splash" style="padding-top:0; align-items:center; justify-content:center;">
+    <div style="margin:auto; text-align:center;">
+      <div class="spin-wrap"><div class="spin-photo img-alinhador"></div></div>
+      <div class="splash-title">MIRNA LIZ</div>
+      <div class="splash-sub">Aligner</div>
+    </div>
+  </div>
+
   <!-- LOGIN SCREEN -->
-  <div class="screen active" data-name="login">
+  <div class="screen" data-name="login">
     <div class="auth-wrap">
-      <div class="auth-logo">Alinha</div>
+      <div class="auth-logo">Mirna Liz</div>
       <div class="auth-subtitle">Seu tratamento ortodôntico inteligente</div>
       <div class="input-group">
         <label>E-mail</label>
@@ -245,7 +261,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 
   <!-- CLÍNICA -->
   <div class="screen" data-name="clinica">
-    <div class="topbar"><div class="hello"><b>Clínica Alinha</b></div><div class="iconbtn">📍</div></div>
+    <div class="topbar"><div class="hello"><b>Clínica Mirna Liz</b></div><div class="iconbtn">📍</div></div>
     <div class="scroll">
       <div class="hero-img img-consultorio" onclick="openScreen('clinicdetail')" style="border-radius:16px; height:180px; margin-bottom:12px;"></div>
       <div class="grid2" style="margin-top:8px">
@@ -537,13 +553,19 @@ function saveNames(source){
 
 updateGreeting();
 
-(async function checkSession(){
-  const client = initSupabase();
-  if(!client) return;
-  try{
-    const {data:{session}} = await client.auth.getSession();
-    if(session) await loadProfileAndEnter(client, session.user.id);
-  }catch(e){}
+(function boot(){
+  const minSplash = new Promise(res=>setTimeout(res, 2000));
+  (async ()=>{
+    const client = initSupabase();
+    await minSplash;
+    if(client){
+      try{
+        const {data:{session}} = await client.auth.getSession();
+        if(session){ await loadProfileAndEnter(client, session.user.id); return; }
+      }catch(e){}
+    }
+    openScreen('login');
+  })();
 })();
 
 let running=true, seconds=15*3600+20*60;
