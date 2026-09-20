@@ -128,7 +128,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
       <div class="auth-subtitle">Seu tratamento ortodôntico inteligente</div>
       <div class="input-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" value="marina@alves.com">
+        <input type="email" id="loginEmail" value="paciente@alinhador.com">
       </div>
       <div class="input-group">
         <label>Senha</label>
@@ -145,15 +145,15 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     <div class="scroll" style="padding-top:10px">
       <div class="input-group">
         <label>Nome Completo</label>
-        <input type="text" id="signupName" value="Marina Alves">
+        <input type="text" id="signupName" placeholder="Seu nome completo">
       </div>
       <div class="input-group">
         <label>E-mail</label>
-        <input type="email" id="signupEmail" value="marina@alves.com">
+        <input type="email" id="signupEmail" placeholder="seu@email.com">
       </div>
       <div class="input-group">
         <label>Senha</label>
-        <input type="password" id="signupPass" value="123456">
+        <input type="password" id="signupPass" placeholder="Sua senha">
       </div>
       <div class="input-group">
         <label>Nome do Ortodontista</label>
@@ -164,10 +164,10 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- HOME (Livre de poluição, limpa estilo app) -->
+  <!-- HOME -->
   <div class="screen" data-name="home">
     <div class="topbar">
-      <div class="hello" style="text-transform:uppercase; letter-spacing:.1em; font-size:10px;">Boa noite<b id="nameHome" contenteditable="true" spellcheck="false" style="font-family:'Playfair Display',serif; font-size:20px; letter-spacing:.06em; text-transform:none; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Marina Alves</b></div>
+      <div class="hello"><span id="greetingText" style="text-transform:uppercase; letter-spacing:.1em; font-size:10px;">Boa noite</span><b id="nameHome" contenteditable="true" spellcheck="false" style="font-family:'Playfair Display',serif; font-size:20px; letter-spacing:.06em; text-transform:none; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Usuário</b></div>
       <div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div>
     </div>
     <div class="scroll">
@@ -199,7 +199,6 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div class="ring-txt"><b>15h 20m</b><div>Meta diária: 20h — faltam 4h40</div></div>
       </div>
 
-      <!-- Atalho elegante para a página de etapas -->
       <div class="sect-title"><h3>Tratamento</h3><span onclick="openScreen('stageslist')">ver todas</span></div>
       <div class="card" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="openScreen('stageslist')">
         <div style="display:flex; align-items:center; gap:12px;">
@@ -260,13 +259,13 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- PERFIL (Sincronizado com o nome do cadastro) -->
+  <!-- PERFIL -->
   <div class="screen" data-name="perfil">
     <div class="topbar"><div class="hello"><b>Perfil</b></div><div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div></div>
     <div class="scroll">
       <div class="profile-head">
-        <div class="avatar" id="avatarInitials">MA</div>
-        <div id="nameProfile" contenteditable="true" spellcheck="false" style="font-weight:600; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames('profile')">Marina Alves</div>
+        <div class="avatar" id="avatarInitials">UA</div>
+        <div id="nameProfile" contenteditable="true" spellcheck="false" style="font-weight:600; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames('profile')">Usuário</div>
         <div style="font-size:12px; color:var(--dim)">Tratamento iniciado em Jan/2026</div>
       </div>
       <div class="plist">
@@ -282,7 +281,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- QUADROS DE ETAPAS DO TRATAMENTO (Página dedicada) -->
+  <!-- QUADROS DE ETAPAS -->
   <div class="screen" data-name="stageslist">
     <div class="back-header"><div class="iconbtn" onclick="openScreen('home')">←</div><h2>Etapas do Tratamento</h2></div>
     <div class="scroll" style="padding-top:10px">
@@ -374,6 +373,15 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 const mainTabs=['home','uso','clinica','perfil'];
 const authScreens=['login','signup'];
 
+function updateGreeting(){
+  const hour = new Date().getHours();
+  let greet = "Boa noite";
+  if(hour >= 5 && hour < 12) greet = "Bom dia";
+  else if(hour >= 12 && hour < 18) greet = "Boa tarde";
+  const el = document.getElementById('greetingText');
+  if(el) el.textContent = greet;
+}
+
 function switchTab(name){
   document.querySelectorAll('.screen').forEach(s=>{
     if(mainTabs.includes(s.dataset.name)) s.classList.toggle('active', s.dataset.name===name);
@@ -381,6 +389,7 @@ function switchTab(name){
   });
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
   document.getElementById('tabbar').style.display='flex';
+  if(name==='home') updateGreeting();
 }
 
 function openScreen(name){
@@ -391,6 +400,7 @@ function openScreen(name){
     document.getElementById('tabbar').style.display='none';
   } else if(mainTabs.includes(name)){
     document.getElementById('tabbar').style.display='flex';
+    if(name==='home') updateGreeting();
   } else {
     document.getElementById('tabbar').style.display='none';
   }
@@ -398,7 +408,6 @@ function openScreen(name){
 function close_(){ switchTab('home'); }
 
 function handleLogin(){
-  // Pega o que estiver salvo ou mantém o padrão e vai pra home
   loadSavedData();
   switchTab('home');
 }
@@ -432,8 +441,8 @@ function updateInitials(name){
 
 function saveNames(source){
   try{
-    let patient = document.getElementById('nameHome').textContent.trim() || 'Marina Alves';
-    if(source==='profile') patient = document.getElementById('nameProfile').textContent.trim() || 'Marina Alves';
+    let patient = document.getElementById('nameHome').textContent.trim() || 'Usuário';
+    if(source==='profile') patient = document.getElementById('nameProfile').textContent.trim() || 'Usuário';
     const doctor = document.getElementById('nameDoctor').textContent.trim() || 'Dra. Mirna Liz';
     
     document.getElementById('nameHome').textContent = patient;
@@ -457,18 +466,21 @@ function loadSavedData(){
       document.getElementById('nameHome').textContent=p; 
       document.getElementById('nameProfile').textContent=p; 
       updateInitials(p);
-      document.getElementById('signupName').value = p;
+      const sInput = document.getElementById('signupName');
+      if(sInput) sInput.value = p;
     }
     if(d){
       document.getElementById('nameDoctor').textContent=d;
       document.getElementById('nameDoctorAppt').textContent=d;
       document.getElementById('nameDoctorApptDetail').textContent = d.toLowerCase().startsWith('dra')||d.toLowerCase().startsWith('dr')? 'a '+d : d;
-      document.getElementById('signupDoctor').value = d;
+      const dInput = document.getElementById('signupDoctor');
+      if(dInput) dInput.value = d;
     }
   }catch(e){ console.error('Storage error', e); }
 }
 
 loadSavedData();
+updateGreeting();
 
 let running=true, seconds=15*3600+20*60;
 function fmt(s){const h=String(Math.floor(s/3600)).padStart(2,'0'),m=String(Math.floor(s%3600/60)).padStart(2,'0'),sec=String(s%60).padStart(2,'0');return h+':'+m+':'+sec;}
