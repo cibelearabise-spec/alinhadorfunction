@@ -108,11 +108,11 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 .prow:last-child{border-bottom:none;}
 .prow span{color:var(--dim);}
 
-/* Imagens reais e elegantes via Unsplash */
-.img-clinica { background-image: url('https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80'); }
-.img-stage10 { background-image: url('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=400&q=80'); }
-.img-stage11 { background-image: url('https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=400&q=80'); }
-.img-stage12 { background-image: url('https://images.unsplash.com/photo-1606811841689-23dfddce6395?auto=format&fit=crop&w=400&q=80'); }
+/* Mapeamento exato das suas imagens locais na raiz do repositório */
+.img-alinhador { background-image: url('alinhador.jpg'); }
+.img-consultorio { background-image: url('consultório.jpg'); }
+.img-agendamento2 { background-image: url('fotoagendamento2.jpg'); }
+.img-noagendamento { background-image: url('fotonoagendamento.jpg'); }
 
 /* Auth screens styling */
 .auth-wrap{display:flex; flex-direction:column; justify-content:center; height:100%; padding:30px 24px; text-align:center;}
@@ -154,7 +154,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     <div class="scroll" style="padding-top:10px">
       <div class="input-group">
         <label>Nome Completo</label>
-        <input type="text" id="signupName" value="Marina Alves">
+        <input type="text" id="signupName" value="Usuário">
       </div>
       <div class="input-group">
         <label>E-mail</label>
@@ -180,7 +180,8 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
       <div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div>
     </div>
     <div class="scroll">
-      <div class="hero-photo img-clinica" style="aspect-ratio:16/6; position:relative; margin-bottom:10px; background-size:cover; background-position:center; border-radius:14px;" onclick="openScreen('appt')">
+      <!-- alinhador.jpg na capa do aplicativo logo após o cadastro -->
+      <div class="hero-photo img-alinhador" style="aspect-ratio:16/6; position:relative; margin-bottom:10px; background-size:cover; background-position:center; border-radius:14px;" onclick="openScreen('appt')">
         <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(9,11,11,0) 40%, rgba(9,11,11,.9) 100%); border-radius:14px; display:flex; align-items:flex-end; padding:10px 14px;">
           <div>
             <div style="font-size:9px; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; font-weight:600;">Sorriso perfeito, sem esforço</div>
@@ -193,7 +194,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div>
           <div class="lbl">Próxima consulta</div>
           <div class="when">Qui, 24 Set · 15:00</div>
-          <div class="sub">Troca para etapa 12 · <span id="nameDoctorAppt">Dra. Mirna Liz</span></div>
+          <div class="sub">Troca para etapa 12 · <span id="nameDoctorAppt">Dra. Costa</span></div>
         </div>
         <button class="btn-ghost" onclick="openScreen('appt')">Ver</button>
       </div>
@@ -207,11 +208,11 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div class="ring-txt"><b>15h 20m</b><div>Meta diária: 20h — faltam 4h40</div></div>
       </div>
 
-      <div class="sect-title"><h3>Etapas do tratamento</h3><span onclick="switchTab('perfil')">ver plano</span></div>
+      <div class="sect-title"><h3>Etapas do tratamento</h3><span onclick="openScreen('stageslist')">ver plano</span></div>
       <div class="row-cards">
-        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-stage10"></div><div class="info"><b>Etapa 10</b><span>Concluída</span></div></div>
-        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-stage11"></div><div class="info"><b>Etapa 11</b><span>Em uso</span></div></div>
-        <div class="stage" onclick="openScreen('stage')"><div class="ph img-stage12"></div><div class="info"><b>Etapa 12</b><span>A partir de 24/09</span></div></div>
+        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-agendamento2"></div><div class="info"><b>Etapa 10</b><span>Concluída</span></div></div>
+        <div class="stage done" onclick="openScreen('stage')"><div class="ph img-noagendamento"></div><div class="info"><b>Etapa 11</b><span>Em uso</span></div></div>
+        <div class="stage" onclick="openScreen('stage')"><div class="ph img-agendamento2"></div><div class="info"><b>Etapa 12</b><span>A partir de 24/09</span></div></div>
       </div>
 
       <div class="sect-title"><h3>Destaque da clínica</h3></div>
@@ -249,11 +250,11 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- CLÍNICA -->
+  <!-- CLÍNICA (consultório.jpg) -->
   <div class="screen" data-name="clinica">
     <div class="topbar"><div class="hello"><b>Clínica Alinha</b></div><div class="iconbtn">📍</div></div>
     <div class="scroll">
-      <div class="hero-img img-clinica" onclick="openScreen('clinicdetail')" style="border-radius:16px; height:180px; margin-bottom:12px;"></div>
+      <div class="hero-img img-consultorio" onclick="openScreen('clinicdetail')" style="border-radius:16px; height:180px; margin-bottom:12px;"></div>
       <div class="grid2" style="margin-top:8px">
         <div class="tile" onclick="openScreen('clinicdetail')"><div class="em">✨</div><span>Clareamento</span></div>
         <div class="tile" onclick="openScreen('clinicdetail')"><div class="em">🦷</div><span>Alinhadores</span></div>
@@ -279,7 +280,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div style="font-size:12px; color:var(--dim)">Tratamento iniciado em Jan/2026</div>
       </div>
       <div class="plist">
-        <div class="prow"><span>Etapa atual</span>11 de 24</div>
+        <div class="prow" onclick="openScreen('stageslist')" style="cursor:pointer"><span>Etapa atual</span>11 de 24 ›</div>
         <div class="prow"><span>Ortodontista</span><span id="nameDoctor" contenteditable="true" spellcheck="false" style="outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Dra. Costa</span></div>
         <div class="prow"><span>Previsão de término</span>Mar/2027</div>
       </div>
@@ -291,17 +292,52 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
+  <!-- NOVA PÁGINA: LISTA DE ETAPAS DO TRATAMENTO (usando fotoagendamento2 e fotonoagendamento) -->
+  <div class="screen" data-name="stageslist">
+    <div class="back-header"><div class="iconbtn" onclick="openScreen('home')">←</div><h2>Etapas do Tratamento</h2></div>
+    <div class="scroll" style="padding-top:10px">
+      <div style="margin-bottom:14px; font-size:12px; color:var(--dim);">Acompanhe o progresso de cada alinhador do seu plano ortodôntico.</div>
+      
+      <div class="card" style="margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openScreen('stage')">
+        <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center;" class="img-agendamento2"></div>
+        <div style="flex:1;">
+          <div style="font-size:10px; color:var(--accent); font-weight:600; text-transform:uppercase;">Concluída</div>
+          <h3 style="font-size:16px; margin:2px 0;">Etapa 10</h3>
+          <p style="font-size:11.5px; color:var(--dim);">Finalizada com 100% de uso diário adequado.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer; border-color:var(--accent);" onclick="openScreen('stage')">
+        <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center;" class="img-noagendamento"></div>
+        <div style="flex:1;">
+          <div style="font-size:10px; color:var(--accent); font-weight:600; text-transform:uppercase;">Em uso atual</div>
+          <h3 style="font-size:16px; margin:2px 0;">Etapa 11</h3>
+          <p style="font-size:11.5px; color:var(--dim);">Previsão de término em 24 de setembro.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openScreen('stage')">
+        <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center;" class="img-agendamento2"></div>
+        <div style="flex:1;">
+          <div style="font-size:10px; color:var(--dim); font-weight:600; text-transform:uppercase;">Próxima</div>
+          <h3 style="font-size:16px; margin:2px 0;">Etapa 12</h3>
+          <p style="font-size:11.5px; color:var(--dim);">Início programado na consulta de 24/09.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- STAGE DETAIL -->
   <div class="screen" data-name="stage">
-    <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Etapa 12</h2></div>
+    <div class="back-header"><div class="iconbtn" onclick="openScreen('stageslist')">←</div><h2>Detalhes da Etapa</h2></div>
     <div class="scroll" style="padding-top:6px">
-      <div class="hero-img img-stage12" style="border-radius:16px; height:240px;"></div>
+      <div class="hero-img img-noagendamento" style="border-radius:16px; height:240px;"></div>
       <div class="detail-body" style="padding:20px 0">
         <h2>Etapa 12 de 24</h2>
         <p>Inicia em 24/09. Use por no mínimo 20 a 22 horas por dia para manter o cronograma previsto pela sua ortodontista.</p>
         <span class="chip">20-22h/dia</span><span class="chip">Trocar em 14 dias</span>
-        <button class="cta" onclick="switchTab('uso'); close_()">Iniciar contagem de uso</button>
-        <button class="cta secondary" onclick="close_()">Voltar</button>
+        <button class="cta" onclick="switchTab('uso')">Iniciar contagem de uso</button>
+        <button class="cta secondary" onclick="openScreen('stageslist')">Voltar às etapas</button>
       </div>
     </div>
   </div>
@@ -310,7 +346,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
   <div class="screen" data-name="appt">
     <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Consulta</h2></div>
     <div class="scroll" style="padding-top:6px">
-      <div class="hero-img img-clinica" style="border-radius:16px"></div>
+      <div class="hero-img img-consultorio" style="border-radius:16px"></div>
       <div class="detail-body" style="padding:20px 0">
         <h2>Troca para etapa 12</h2>
         <p>Quinta-feira, 24 de setembro às 15:00 com <span id="nameDoctorApptDetail">a Dra. Mirna Liz</span>, unidade Setor Bueno. Traga o alinhador da etapa 11 para revisão.</p>
@@ -325,7 +361,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
   <div class="screen" data-name="clinicdetail">
     <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Clareamento pós-tratamento</h2></div>
     <div class="scroll" style="padding-top:6px">
-      <div class="hero-img img-clinica" style="border-radius:16px; height:240px;"></div>
+      <div class="hero-img img-consultorio" style="border-radius:16px; height:240px;"></div>
       <div class="detail-body" style="padding:20px 0">
         <h2>Clareamento pós-tratamento</h2>
         <p>Sessão de clareamento a laser oferecida aos pacientes que concluem o tratamento com alinhadores dentro do prazo previsto.</p>
@@ -393,8 +429,8 @@ function handleSignup(){
 
 function saveNames(source){
   try{
-    let patient = document.getElementById('nameHome').textContent.trim() || 'Usuario';
-    if(source==='profile') patient = document.getElementById('nameProfile').textContent.trim() || 'Usuario';
+    let patient = document.getElementById('nameHome').textContent.trim() || 'Usuário';
+    if(source==='profile') patient = document.getElementById('nameProfile').textContent.trim() || 'Marina Alves';
     const doctor = document.getElementById('nameDoctor').textContent.trim() || 'Dra. Mirna Liz';
     document.getElementById('nameHome').textContent = patient;
     document.getElementById('nameProfile').textContent = patient;
