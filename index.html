@@ -178,6 +178,10 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <label>Nome do Ortodontista</label>
         <input type="text" id="signupDoctor" value="Dra. Mirna Liz">
       </div>
+      <div class="input-group">
+        <label>Quantas placas/etapas tem o tratamento?</label>
+        <input type="number" id="signupTotalStages" value="24" min="1" max="60">
+      </div>
       <div class="auth-error" id="signupError"></div>
       <button class="cta" id="signupBtn" onclick="handleSignup()">Concluir Cadastro</button>
       <button class="cta secondary" onclick="openScreen('login')">Já tenho conta</button>
@@ -224,7 +228,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="width:40px; height:40px; border-radius:10px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:18px;">🦷</div>
           <div>
-            <div style="font-size:14px; font-weight:600;">Etapa Atual: 11 de 24</div>
+            <div id="stageBadgeText" style="font-size:14px; font-weight:600;">Etapa Atual: 11 de 24</div>
             <div style="font-size:11px; color:var(--dim);">Toque para gerenciar os quadros do plano</div>
           </div>
         </div>
@@ -289,7 +293,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div style="font-size:12px; color:var(--dim)">Tratamento iniciado em Jan/2026</div>
       </div>
       <div class="plist">
-        <div class="prow" onclick="openScreen('stageslist')" style="cursor:pointer"><span>Etapa atual</span>11 de 24 ›</div>
+        <div class="prow" onclick="openScreen('stageslist')" style="cursor:pointer"><span>Etapa atual</span><span id="stageProfileRow">11 de 24 ›</span></div>
         <div class="prow"><span>Ortodontista</span><span id="nameDoctor" contenteditable="true" spellcheck="false" style="outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Dra. Mirna Liz</span></div>
         <div class="prow"><span>Previsão de término</span>Mar/2027</div>
       </div>
@@ -306,33 +310,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     <div class="back-header"><div class="iconbtn" onclick="openScreen('home')">←</div><h2>Etapas do Tratamento</h2></div>
     <div class="scroll" style="padding-top:10px">
       <div style="margin-bottom:14px; font-size:12px; color:var(--dim);">Acompanhe o progresso de cada alinhador do seu plano ortodôntico.</div>
-
-      <div class="card" style="margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openScreen('stage')">
-        <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center;" class="img-agendamento2"></div>
-        <div style="flex:1;">
-          <div style="font-size:10px; color:var(--accent); font-weight:600; text-transform:uppercase;">Concluída</div>
-          <h3 style="font-size:16px; margin:2px 0;">Etapa 10</h3>
-          <p style="font-size:11.5px; color:var(--dim);">Finalizada com 100% de uso diário adequado.</p>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer; border-color:var(--accent);" onclick="openScreen('stage')">
-        <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center;" class="img-noagendamento"></div>
-        <div style="flex:1;">
-          <div style="font-size:10px; color:var(--accent); font-weight:600; text-transform:uppercase;">Em uso atual</div>
-          <h3 style="font-size:16px; margin:2px 0;">Etapa 11</h3>
-          <p style="font-size:11.5px; color:var(--dim);">Previsão de término em 24 de setembro.</p>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openScreen('stage')">
-        <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center;" class="img-agendamento2"></div>
-        <div style="flex:1;">
-          <div style="font-size:10px; color:var(--dim); font-weight:600; text-transform:uppercase;">Próxima</div>
-          <h3 style="font-size:16px; margin:2px 0;">Etapa 12</h3>
-          <p style="font-size:11.5px; color:var(--dim);">Início programado na consulta de 24/09.</p>
-        </div>
-      </div>
+      <div id="stagesListContainer"></div>
     </div>
   </div>
 
@@ -340,12 +318,12 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
   <div class="screen" data-name="stage">
     <div class="back-header"><div class="iconbtn" onclick="openScreen('stageslist')">←</div><h2>Detalhes da Etapa</h2></div>
     <div class="scroll" style="padding-top:6px">
-      <div class="hero-img img-noagendamento" style="border-radius:16px; height:240px;"></div>
+      <div class="hero-img img-noagendamento" id="stageDetailImg" style="border-radius:16px; height:240px;"></div>
       <div class="detail-body" style="padding:20px 0">
-        <h2>Etapa 12 de 24</h2>
-        <p>Inicia em 24/09. Use por no mínimo 20 a 22 horas por dia para manter o cronograma previsto pela sua ortodontista.</p>
+        <h2 id="stageDetailTitle">Etapa 12 de 24</h2>
+        <p id="stageDetailText">Inicia em 24/09. Use por no mínimo 20 a 22 horas por dia para manter o cronograma previsto pela sua ortodontista.</p>
         <span class="chip">20-22h/dia</span><span class="chip">Trocar em 14 dias</span>
-        <button class="cta" onclick="switchTab('uso')">Iniciar contagem de uso</button>
+        <button class="cta" id="stageDetailAction" onclick="completeCurrentStage()">Concluir etapa e avançar</button>
         <button class="cta secondary" onclick="openScreen('stageslist')">Voltar às etapas</button>
       </div>
     </div>
@@ -393,16 +371,24 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 /* ====== SUPABASE ======
    Já preenchido com o seu projeto. Se um dia trocar de projeto,
    é só atualizar essas duas linhas.
-   Rode isso no SQL Editor do Supabase (uma vez só), se ainda não rodou:
+
+   Se você AINDA NÃO criou a tabela profiles, rode isso (uma vez só):
 
    create table profiles (
      id uuid references auth.users primary key,
      patient_name text,
-     doctor_name text default 'Dra. Mirna Liz'
+     doctor_name text default 'Dra. Mirna Liz',
+     total_stages int default 24,
+     current_stage int default 1
    );
    alter table profiles enable row level security;
    create policy "Users manage own profile" on profiles
      for all using (auth.uid() = id) with check (auth.uid() = id);
+
+   Se você JÁ criou a tabela antes (sem as colunas de etapas), rode só isso:
+
+   alter table profiles add column if not exists total_stages int default 24;
+   alter table profiles add column if not exists current_stage int default 1;
 ================================ */
 const SUPABASE_URL = 'https://tgsyfhecpbsprcnzhdmt.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_RFfd6QKw6rZZXGpcEo7gHA_DKOU5zXL';
@@ -459,11 +445,19 @@ function updateInitials(name){
   } catch(e) {}
 }
 
+const STATE = { totalStages: 24, currentStage: 1 };
+
 async function loadProfileAndEnter(client, userId){
   let patient = 'Paciente', doctor = 'Dra. Mirna Liz';
+  STATE.totalStages = 24; STATE.currentStage = 1;
   try{
     const {data} = await client.from('profiles').select('*').eq('id', userId).single();
-    if(data){ patient = data.patient_name || patient; doctor = data.doctor_name || doctor; }
+    if(data){
+      patient = data.patient_name || patient;
+      doctor = data.doctor_name || doctor;
+      STATE.totalStages = data.total_stages || 24;
+      STATE.currentStage = data.current_stage || 1;
+    }
   }catch(e){}
   document.getElementById('nameHome').textContent = patient;
   document.getElementById('nameProfile').textContent = patient;
@@ -473,7 +467,65 @@ async function loadProfileAndEnter(client, userId){
   document.getElementById('nameDoctorApptDetail').textContent = doctor.toLowerCase().startsWith('dra')||doctor.toLowerCase().startsWith('dr')? 'a '+doctor : doctor;
   localStorage.setItem('alinha_patient', patient);
   localStorage.setItem('alinha_doctor', doctor);
+  renderStageProgress();
   switchTab('home');
+}
+
+function renderStageProgress(){
+  const badge = document.getElementById('stageBadgeText');
+  if(badge) badge.textContent = `Etapa Atual: ${STATE.currentStage} de ${STATE.totalStages}`;
+  const profRow = document.getElementById('stageProfileRow');
+  if(profRow) profRow.textContent = `${STATE.currentStage} de ${STATE.totalStages} ›`;
+
+  const list = document.getElementById('stagesListContainer');
+  if(!list) return;
+  list.innerHTML = '';
+  const imgs = ['img-agendamento2','img-noagendamento'];
+  for(let i=1; i<=STATE.totalStages; i++){
+    const status = i < STATE.currentStage ? 'done' : (i === STATE.currentStage ? 'current' : 'upcoming');
+    const label = status==='done' ? 'Concluída' : (status==='current' ? 'Em uso atual' : 'Próxima');
+    const desc = status==='done' ? 'Finalizada com uso diário adequado.' : (status==='current' ? 'Etapa em andamento no momento.' : 'Aguardando início.');
+    const imgClass = status==='upcoming' ? '' : imgs[i % imgs.length];
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cssText = 'margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer;' + (status==='current' ? 'border-color:var(--accent);' : '');
+    card.onclick = () => openStageDetail(i);
+    card.innerHTML = `
+      <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center; flex-shrink:0; background-color:var(--surface2);" class="${imgClass}"></div>
+      <div style="flex:1;">
+        <div style="font-size:10px; color:${status==='upcoming'?'var(--dim)':'var(--accent)'}; font-weight:600; text-transform:uppercase;">${label}</div>
+        <h3 style="font-size:16px; margin:2px 0;">Etapa ${i}</h3>
+        <p style="font-size:11.5px; color:var(--dim);">${desc}</p>
+      </div>`;
+    list.appendChild(card);
+  }
+}
+
+let detailStage = 1;
+function openStageDetail(n){
+  detailStage = n;
+  const isCurrent = n === STATE.currentStage;
+  const isDone = n < STATE.currentStage;
+  document.getElementById('stageDetailTitle').textContent = `Etapa ${n} de ${STATE.totalStages}`;
+  document.getElementById('stageDetailText').textContent = isDone
+    ? 'Esta etapa já foi concluída.'
+    : (isCurrent ? 'Use por no mínimo 20 a 22 horas por dia para manter o cronograma previsto.' : 'Esta etapa ainda vai começar. Continue usando a placa atual normalmente.');
+  document.getElementById('stageDetailAction').style.display = isCurrent ? 'block' : 'none';
+  document.getElementById('stageDetailImg').className = 'hero-img ' + (n % 2 === 0 ? 'img-noagendamento' : 'img-agendamento2');
+  openScreen('stage');
+}
+
+async function completeCurrentStage(){
+  if(STATE.currentStage < STATE.totalStages) STATE.currentStage++;
+  renderStageProgress();
+  const client = initSupabase();
+  if(client){
+    try{
+      const {data:{session}} = await client.auth.getSession();
+      if(session) await client.from('profiles').upsert({id: session.user.id, current_stage: STATE.currentStage});
+    }catch(e){}
+  }
+  openScreen('stageslist');
 }
 
 async function handleLogin(){
@@ -497,6 +549,7 @@ async function handleSignup(){
   const email = document.getElementById('signupEmail').value.trim();
   const pass = document.getElementById('signupPass').value;
   const doctor = document.getElementById('signupDoctor').value.trim() || 'Dra. Mirna Liz';
+  const totalStages = parseInt(document.getElementById('signupTotalStages').value) || 24;
   const errEl = document.getElementById('signupError');
   errEl.textContent = '';
   const client = initSupabase();
@@ -508,7 +561,7 @@ async function handleSignup(){
   btn.disabled = false; btn.textContent = 'Concluir Cadastro';
   if(error){ errEl.textContent = error.message; return; }
   if(data.user){
-    try{ await client.from('profiles').upsert({id: data.user.id, patient_name: name || 'Paciente', doctor_name: doctor}); }catch(e){}
+    try{ await client.from('profiles').upsert({id: data.user.id, patient_name: name || 'Paciente', doctor_name: doctor, total_stages: totalStages, current_stage: 1}); }catch(e){}
   }
   errEl.style.color = 'var(--accent)';
   errEl.textContent = 'Conta criada! Se a confirmação por e-mail estiver ativa no seu projeto, confirme antes de entrar.';
@@ -577,4 +630,4 @@ function toggleTimer(){
 }
 </script>
 </body>
-</html>
+  </html>
