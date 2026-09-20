@@ -164,7 +164,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- HOME -->
+  <!-- HOME (Livre de poluição, limpa estilo app) -->
   <div class="screen" data-name="home">
     <div class="topbar">
       <div class="hello" style="text-transform:uppercase; letter-spacing:.1em; font-size:10px;">Boa noite<b id="nameHome" contenteditable="true" spellcheck="false" style="font-family:'Playfair Display',serif; font-size:20px; letter-spacing:.06em; text-transform:none; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Marina Alves</b></div>
@@ -199,6 +199,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div class="ring-txt"><b>15h 20m</b><div>Meta diária: 20h — faltam 4h40</div></div>
       </div>
 
+      <!-- Atalho elegante para a página de etapas -->
       <div class="sect-title"><h3>Tratamento</h3><span onclick="openScreen('stageslist')">ver todas</span></div>
       <div class="card" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="openScreen('stageslist')">
         <div style="display:flex; align-items:center; gap:12px;">
@@ -209,13 +210,6 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
           </div>
         </div>
         <div style="color:var(--accent); font-size:16px;">›</div>
-      </div>
-
-      <div class="sect-title"><h3>Destaque da clínica</h3></div>
-      <div class="feature" onclick="openScreen('clinicdetail')">
-        <div class="tag">Novidade</div>
-        <h3>Clareamento pós-tratamento</h3>
-        <p>Sessão exclusiva para pacientes Alinha ao concluir o tratamento.</p>
       </div>
     </div>
   </div>
@@ -266,7 +260,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- PERFIL -->
+  <!-- PERFIL (Sincronizado com o nome do cadastro) -->
   <div class="screen" data-name="perfil">
     <div class="topbar"><div class="hello"><b>Perfil</b></div><div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div></div>
     <div class="scroll">
@@ -288,7 +282,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     </div>
   </div>
 
-  <!-- QUADROS DE ETAPAS DO TRATAMENTO -->
+  <!-- QUADROS DE ETAPAS DO TRATAMENTO (Página dedicada) -->
   <div class="screen" data-name="stageslist">
     <div class="back-header"><div class="iconbtn" onclick="openScreen('home')">←</div><h2>Etapas do Tratamento</h2></div>
     <div class="scroll" style="padding-top:10px">
@@ -404,6 +398,8 @@ function openScreen(name){
 function close_(){ switchTab('home'); }
 
 function handleLogin(){
+  // Pega o que estiver salvo ou mantém o padrão e vai pra home
+  loadSavedData();
   switchTab('home');
 }
 
@@ -427,7 +423,7 @@ function handleSignup(){
 
 function updateInitials(name){
   try {
-    const parts = name.split(' ');
+    const parts = name.trim().split(' ');
     let init = parts[0][0];
     if(parts.length > 1) init += parts[parts.length - 1][0];
     document.getElementById('avatarInitials').textContent = init.toUpperCase();
@@ -453,20 +449,26 @@ function saveNames(source){
   }catch(e){ console.error('Storage error', e); }
 }
 
-try{
-  const p = localStorage.getItem('alinha_patient');
-  const d = localStorage.getItem('alinha_doctor') || 'Dra. Mirna Liz';
-  if(p){ 
-    document.getElementById('nameHome').textContent=p; 
-    document.getElementById('nameProfile').textContent=p; 
-    updateInitials(p);
-  }
-  if(d){
-    document.getElementById('nameDoctor').textContent=d;
-    document.getElementById('nameDoctorAppt').textContent=d;
-    document.getElementById('nameDoctorApptDetail').textContent = d.toLowerCase().startsWith('dra')||d.toLowerCase().startsWith('dr')? 'a '+d : d;
-  }
-}catch(e){ console.error('Storage error', e); }
+function loadSavedData(){
+  try{
+    const p = localStorage.getItem('alinha_patient');
+    const d = localStorage.getItem('alinha_doctor') || 'Dra. Mirna Liz';
+    if(p){ 
+      document.getElementById('nameHome').textContent=p; 
+      document.getElementById('nameProfile').textContent=p; 
+      updateInitials(p);
+      document.getElementById('signupName').value = p;
+    }
+    if(d){
+      document.getElementById('nameDoctor').textContent=d;
+      document.getElementById('nameDoctorAppt').textContent=d;
+      document.getElementById('nameDoctorApptDetail').textContent = d.toLowerCase().startsWith('dra')||d.toLowerCase().startsWith('dr')? 'a '+d : d;
+      document.getElementById('signupDoctor').value = d;
+    }
+  }catch(e){ console.error('Storage error', e); }
+}
+
+loadSavedData();
 
 let running=true, seconds=15*3600+20*60;
 function fmt(s){const h=String(Math.floor(s/3600)).padStart(2,'0'),m=String(Math.floor(s%3600/60)).padStart(2,'0'),sec=String(s%60).padStart(2,'0');return h+':'+m+':'+sec;}
