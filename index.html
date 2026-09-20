@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --bg:#090b0b; --surface:#151918; --surface2:#202624; --line:#333335;
@@ -99,9 +100,9 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 .prow:last-child{border-bottom:none;}
 .prow span{color:var(--dim);}
 
-/* Imagens locais */
+/* Imagens locais — coloque esses 4 arquivos na MESMA pasta do index.html ao publicar */
 .img-alinhador { background-image: url('alinhador.jpg'); }
-.img-consultorio { background-image: url('consultório.jpg'); }
+.img-consultorio { background-image: url('consultorio.jpg'); }
 .img-agendamento2 { background-image: url('fotoagendamento2.jpg'); }
 .img-noagendamento { background-image: url('fotonoagendamento.jpg'); }
 
@@ -115,6 +116,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 .input-group input:focus{border-color:var(--accent);}
 .auth-link{margin-top:16px; font-size:12px; color:var(--dim); cursor:pointer;}
 .auth-link span{color:var(--accent); font-weight:600;}
+.auth-error{color:#e08585; font-size:12px; min-height:16px; text-align:left; margin-top:2px; margin-bottom:8px;}
 </style>
 </head>
 <body>
@@ -128,13 +130,14 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
       <div class="auth-subtitle">Seu tratamento ortodôntico inteligente</div>
       <div class="input-group">
         <label>E-mail</label>
-        <input type="email" id="loginEmail" value="paciente@alinhador.com">
+        <input type="email" id="loginEmail" placeholder="voce@email.com">
       </div>
       <div class="input-group">
         <label>Senha</label>
-        <input type="password" id="loginPass" value="123456">
+        <input type="password" id="loginPass" placeholder="••••••••">
       </div>
-      <button class="cta" onclick="handleLogin()">Entrar</button>
+      <div class="auth-error" id="loginError"></div>
+      <button class="cta" id="loginBtn" onclick="handleLogin()">Entrar</button>
       <div class="auth-link" onclick="openScreen('signup')">Não tem uma conta? <span>Cadastre-se</span></div>
     </div>
   </div>
@@ -159,7 +162,8 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <label>Nome do Ortodontista</label>
         <input type="text" id="signupDoctor" value="Dra. Mirna Liz">
       </div>
-      <button class="cta" onclick="handleSignup()">Concluir Cadastro</button>
+      <div class="auth-error" id="signupError"></div>
+      <button class="cta" id="signupBtn" onclick="handleSignup()">Concluir Cadastro</button>
       <button class="cta secondary" onclick="openScreen('login')">Já tenho conta</button>
     </div>
   </div>
@@ -168,7 +172,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
   <div class="screen" data-name="home">
     <div class="topbar">
       <div class="hello"><span id="greetingText" style="text-transform:uppercase; letter-spacing:.1em; font-size:10px;">Boa noite</span><b id="nameHome" contenteditable="true" spellcheck="false" style="font-family:'Playfair Display',serif; font-size:20px; letter-spacing:.06em; text-transform:none; outline:none; border-bottom:1px dashed transparent;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='transparent'; saveNames()">Usuário</b></div>
-      <div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div>
+      <div class="iconbtn" onclick="logout()" title="Sair">🚪</div>
     </div>
     <div class="scroll">
       <div class="hero-photo img-alinhador" style="aspect-ratio:16/6; position:relative; margin-bottom:10px; background-size:cover; background-position:center; border-radius:14px;" onclick="openScreen('appt')">
@@ -180,7 +184,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         </div>
       </div>
       <button class="cta" style="margin-top:0; margin-bottom:14px; padding:12px;" onclick="openScreen('appt')">AGENDAR AVALIAÇÃO</button>
-      
+
       <div class="card appt-card">
         <div>
           <div class="lbl">Próxima consulta</div>
@@ -261,7 +265,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 
   <!-- PERFIL -->
   <div class="screen" data-name="perfil">
-    <div class="topbar"><div class="hello"><b>Perfil</b></div><div class="iconbtn" onclick="openScreen('login')" title="Sair">🚪</div></div>
+    <div class="topbar"><div class="hello"><b>Perfil</b></div><div class="iconbtn" onclick="logout()" title="Sair">🚪</div></div>
     <div class="scroll">
       <div class="profile-head">
         <div class="avatar" id="avatarInitials">UA</div>
@@ -286,7 +290,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
     <div class="back-header"><div class="iconbtn" onclick="openScreen('home')">←</div><h2>Etapas do Tratamento</h2></div>
     <div class="scroll" style="padding-top:10px">
       <div style="margin-bottom:14px; font-size:12px; color:var(--dim);">Acompanhe o progresso de cada alinhador do seu plano ortodôntico.</div>
-      
+
       <div class="card" style="margin-bottom:12px; display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openScreen('stage')">
         <div style="width:70px; height:70px; border-radius:10px; background-size:cover; background-position:center;" class="img-agendamento2"></div>
         <div style="flex:1;">
@@ -370,6 +374,29 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 </div>
 
 <script>
+/* ====== SUPABASE ======
+   Já preenchido com o seu projeto. Se um dia trocar de projeto,
+   é só atualizar essas duas linhas.
+   Rode isso no SQL Editor do Supabase (uma vez só), se ainda não rodou:
+
+   create table profiles (
+     id uuid references auth.users primary key,
+     patient_name text,
+     doctor_name text default 'Dra. Mirna Liz'
+   );
+   alter table profiles enable row level security;
+   create policy "Users manage own profile" on profiles
+     for all using (auth.uid() = id) with check (auth.uid() = id);
+================================ */
+const SUPABASE_URL = 'https://tgsyfhecpbsprcnzhdmt.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_RFfd6QKw6rZZXGpcEo7gHA_DKOU5zXL';
+let supa = null;
+function initSupabase(){
+  if(!window.supabase) return null;
+  if(!supa) supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return supa;
+}
+
 const mainTabs=['home','uso','clinica','perfil'];
 const authScreens=['login','signup'];
 
@@ -395,7 +422,7 @@ function switchTab(name){
 function openScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelector('.screen[data-name="'+name+'"]').classList.add('active');
-  
+
   if(authScreens.includes(name)){
     document.getElementById('tabbar').style.display='none';
   } else if(mainTabs.includes(name)){
@@ -407,29 +434,6 @@ function openScreen(name){
 }
 function close_(){ switchTab('home'); }
 
-function handleLogin(){
-  loadSavedData();
-  switchTab('home');
-}
-
-function handleSignup(){
-  const name = document.getElementById('signupName').value.trim();
-  const doctor = document.getElementById('signupDoctor').value.trim();
-  if(name) {
-    document.getElementById('nameHome').textContent = name;
-    document.getElementById('nameProfile').textContent = name;
-    updateInitials(name);
-    localStorage.setItem('alinha_patient', name);
-  }
-  if(doctor) {
-    document.getElementById('nameDoctor').textContent = doctor;
-    document.getElementById('nameDoctorAppt').textContent = doctor;
-    document.getElementById('nameDoctorApptDetail').textContent = doctor.toLowerCase().startsWith('dra')||doctor.toLowerCase().startsWith('dr')? 'a '+doctor : doctor;
-    localStorage.setItem('alinha_doctor', doctor);
-  }
-  switchTab('home');
-}
-
 function updateInitials(name){
   try {
     const parts = name.trim().split(' ');
@@ -439,48 +443,108 @@ function updateInitials(name){
   } catch(e) {}
 }
 
+async function loadProfileAndEnter(client, userId){
+  let patient = 'Paciente', doctor = 'Dra. Mirna Liz';
+  try{
+    const {data} = await client.from('profiles').select('*').eq('id', userId).single();
+    if(data){ patient = data.patient_name || patient; doctor = data.doctor_name || doctor; }
+  }catch(e){}
+  document.getElementById('nameHome').textContent = patient;
+  document.getElementById('nameProfile').textContent = patient;
+  updateInitials(patient);
+  document.getElementById('nameDoctor').textContent = doctor;
+  document.getElementById('nameDoctorAppt').textContent = doctor;
+  document.getElementById('nameDoctorApptDetail').textContent = doctor.toLowerCase().startsWith('dra')||doctor.toLowerCase().startsWith('dr')? 'a '+doctor : doctor;
+  localStorage.setItem('alinha_patient', patient);
+  localStorage.setItem('alinha_doctor', doctor);
+  switchTab('home');
+}
+
+async function handleLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  const client = initSupabase();
+  if(!client){ errEl.textContent = 'Não consegui conectar ao Supabase.'; return; }
+  if(!email || !pass){ errEl.textContent = 'Preencha e-mail e senha.'; return; }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  const {data, error} = await client.auth.signInWithPassword({email, password: pass});
+  btn.disabled = false; btn.textContent = 'Entrar';
+  if(error){ errEl.textContent = error.message; return; }
+  await loadProfileAndEnter(client, data.user.id);
+}
+
+async function handleSignup(){
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass = document.getElementById('signupPass').value;
+  const doctor = document.getElementById('signupDoctor').value.trim() || 'Dra. Mirna Liz';
+  const errEl = document.getElementById('signupError');
+  errEl.textContent = '';
+  const client = initSupabase();
+  if(!client){ errEl.textContent = 'Não consegui conectar ao Supabase.'; return; }
+  if(!email || !pass){ errEl.textContent = 'Preencha e-mail e senha.'; return; }
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true; btn.textContent = 'Criando...';
+  const {data, error} = await client.auth.signUp({email, password: pass});
+  btn.disabled = false; btn.textContent = 'Concluir Cadastro';
+  if(error){ errEl.textContent = error.message; return; }
+  if(data.user){
+    try{ await client.from('profiles').upsert({id: data.user.id, patient_name: name || 'Paciente', doctor_name: doctor}); }catch(e){}
+  }
+  errEl.style.color = 'var(--accent)';
+  errEl.textContent = 'Conta criada! Se a confirmação por e-mail estiver ativa no seu projeto, confirme antes de entrar.';
+  if(data.session){
+    await loadProfileAndEnter(client, data.user.id);
+  } else {
+    openScreen('login');
+  }
+}
+
+async function logout(){
+  const client = initSupabase();
+  if(client) await client.auth.signOut();
+  location.reload();
+}
+
 function saveNames(source){
   try{
     let patient = document.getElementById('nameHome').textContent.trim() || 'Usuário';
     if(source==='profile') patient = document.getElementById('nameProfile').textContent.trim() || 'Usuário';
     const doctor = document.getElementById('nameDoctor').textContent.trim() || 'Dra. Mirna Liz';
-    
+
     document.getElementById('nameHome').textContent = patient;
     document.getElementById('nameProfile').textContent = patient;
     updateInitials(patient);
-    
+
     document.getElementById('nameDoctor').textContent = doctor;
     document.getElementById('nameDoctorAppt').textContent = doctor;
     document.getElementById('nameDoctorApptDetail').textContent = doctor.toLowerCase().startsWith('dra')||doctor.toLowerCase().startsWith('dr')? 'a '+doctor : doctor;
-    
+
     localStorage.setItem('alinha_patient', patient);
     localStorage.setItem('alinha_doctor', doctor);
-  }catch(e){ console.error('Storage error', e); }
-}
 
-function loadSavedData(){
-  try{
-    const p = localStorage.getItem('alinha_patient');
-    const d = localStorage.getItem('alinha_doctor') || 'Dra. Mirna Liz';
-    if(p){ 
-      document.getElementById('nameHome').textContent=p; 
-      document.getElementById('nameProfile').textContent=p; 
-      updateInitials(p);
-      const sInput = document.getElementById('signupName');
-      if(sInput) sInput.value = p;
-    }
-    if(d){
-      document.getElementById('nameDoctor').textContent=d;
-      document.getElementById('nameDoctorAppt').textContent=d;
-      document.getElementById('nameDoctorApptDetail').textContent = d.toLowerCase().startsWith('dra')||d.toLowerCase().startsWith('dr')? 'a '+d : d;
-      const dInput = document.getElementById('signupDoctor');
-      if(dInput) dInput.value = d;
+    const client = initSupabase();
+    if(client){
+      client.auth.getSession().then(({data:{session}})=>{
+        if(session) client.from('profiles').upsert({id: session.user.id, patient_name: patient, doctor_name: doctor});
+      });
     }
   }catch(e){ console.error('Storage error', e); }
 }
 
-loadSavedData();
 updateGreeting();
+
+(async function checkSession(){
+  const client = initSupabase();
+  if(!client) return;
+  try{
+    const {data:{session}} = await client.auth.getSession();
+    if(session) await loadProfileAndEnter(client, session.user.id);
+  }catch(e){}
+})();
 
 let running=true, seconds=15*3600+20*60;
 function fmt(s){const h=String(Math.floor(s/3600)).padStart(2,'0'),m=String(Math.floor(s%3600/60)).padStart(2,'0'),sec=String(s%60).padStart(2,'0');return h+':'+m+':'+sec;}
