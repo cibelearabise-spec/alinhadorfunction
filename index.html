@@ -208,6 +208,14 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <label>Em qual etapa ela já está agora?</label>
         <input type="number" id="signupCurrentStage" value="1" min="1" max="60">
       </div>
+      <div class="input-group">
+        <label>Há quantos dias usa a placa atual?</label>
+        <input type="number" id="signupDaysUsed" value="0" min="0" max="60">
+      </div>
+      <div class="input-group">
+        <label>Duração das placas em dias (se repete)</label>
+        <input type="text" id="signupStageDays" value="10,20" placeholder="10,20">
+      </div>
       <div class="auth-error" id="signupError"></div>
       <button class="cta" id="signupBtn" onclick="handleSignup()">Concluir Cadastro</button>
       <button class="cta secondary" onclick="openScreen('login')">Já tenho conta</button>
@@ -255,7 +263,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
           <div style="width:40px; height:40px; border-radius:10px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:18px;">🦷</div>
           <div>
             <div id="stageBadgeText" style="font-size:14px; font-weight:600;">Etapa Atual: 11 de 24</div>
-            <div style="font-size:11px; color:var(--dim);">Toque para gerenciar os quadros do plano</div>
+            <div id="traySubHome" style="font-size:11px; color:var(--dim);">Toque para gerenciar os quadros do plano</div>
           </div>
         </div>
         <div style="color:var(--accent); font-size:16px;">›</div>
@@ -277,6 +285,10 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
         <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em">Placa</div><b id="statPlate" style="font-size:18px">—</b></div>
         <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em">Hoje</div><b id="statToday" style="font-size:18px">0h 00m</b></div>
         <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em">Faltam</div><b id="statLeft" style="font-size:18px">20h 00m</b></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><b id="trayDayTxt">Dia 1 de 10</b><span id="trayLeftTxt" style="font-size:12px;color:var(--dim)">—</span></div>
+        <div style="height:6px;border-radius:6px;background:rgba(255,255,255,.18);margin-top:10px;overflow:hidden"><div id="trayBar" style="height:100%;width:0;background:var(--accent);transition:width .4s"></div></div>
       </div>
       <div class="sect-title" style="margin-top:14px"><h3>Últimos 7 dias</h3><span id="weekAvg">sem registros</span></div>
       <div class="bars" id="weekBars" style="margin-bottom:28px"></div>
@@ -342,7 +354,7 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
       <div class="detail-body" style="padding:20px 0">
         <h2 id="stageDetailTitle">Etapa 12 de 24</h2>
         <p id="stageDetailText">Inicia em 24/09. Use por no mínimo 20 a 22 horas por dia para manter o cronograma previsto pela sua ortodontista.</p>
-        <span class="chip">20-22h/dia</span><span class="chip">Trocar em 14 dias</span>
+        <span class="chip">20-22h/dia</span><span class="chip" id="chipDur">Trocar em 14 dias</span>
         <button class="cta" id="stageDetailAction" onclick="completeCurrentStage()">Concluir etapa e avançar</button>
         <button class="cta secondary" onclick="openScreen('stageslist')">Voltar às etapas</button>
       </div>
@@ -372,14 +384,13 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
 
   <!-- CLINIC DETAIL -->
   <div class="screen" data-name="clinicdetail">
-    <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Clareamento pós-tratamento</h2></div>
+    <div class="back-header"><div class="iconbtn" onclick="close_()">←</div><h2>Clareamento</h2></div>
     <div class="scroll" style="padding-top:6px">
       <div class="hero-img img-consultorio" style="border-radius:16px; height:240px;"></div>
       <div class="detail-body" style="padding:20px 0">
-        <h2>Clareamento pós-tratamento</h2>
-        <p>Sessão de clareamento a laser oferecida aos pacientes que concluem o tratamento com alinhadores dentro do prazo previsto.</p>
-        <span class="chip">45 min</span><span class="chip">Gratuito na conclusão</span>
-        <button class="cta" onclick="close_()">Agendar sessão</button>
+        <h2>Clareamento</h2>
+        <p>Clareamento dental com acompanhamento da clínica. Toque em agendar para combinar o melhor horário.</p>
+        <button class="cta" onclick="openScreen('appt')">Agendar clareamento</button>
         <button class="cta secondary" onclick="close_()">Voltar</button>
       </div>
     </div>
@@ -399,7 +410,8 @@ h1,h2,h3,.display{font-family:'Playfair Display',serif; font-weight:600; letter-
      id uuid references auth.users primary key,
      patient_name text, doctor_name text default 'Dra. Mirna Liz',
      total_stages int default 24, current_stage int default 1,
-     appt_date date, appt_time text, appt_note text
+     appt_date date, appt_time text, appt_note text,
+     stage_start date, stage_days text default '10,20'
    );
    alter table profiles enable row level security;
    create policy "Users manage own profile" on profiles
@@ -474,6 +486,8 @@ async function loadProfileAndEnter(client, userId){
       STATE.totalStages = data.total_stages || 24;
       STATE.currentStage = data.current_stage || 1;
       STATE.apptDate = data.appt_date || null; STATE.apptTime = data.appt_time || ''; STATE.apptNote = data.appt_note || '';
+      STATE.stageDays = data.stage_days || '10,20'; STATE.stageStart = data.stage_start || dayKey(new Date());
+      if(!data.stage_start) client.from('profiles').upsert({id:userId,stage_start:STATE.stageStart});
     }
   }catch(e){}
   document.getElementById('nameHome').textContent = patient;
@@ -496,7 +510,7 @@ function renderStageProgress(){
     list.innerHTML='';
     for(let i=1;i<=STATE.totalStages;i++){
       const st=i<STATE.currentStage?'done':(i===STATE.currentStage?'current':'upcoming');
-      const label={done:'Concluída',current:'Em uso agora',upcoming:'Próxima'}[st];
+      const label={done:'Concluída',current:'Em uso agora',upcoming:'Próxima'}[st]+' · '+stageDur(i)+' dias';
       const desc={done:'Placa finalizada.',current:'Etapa em andamento — use 20 a 22h por dia.',upcoming:'Aguardando troca de placa.'}[st];
       const icon={done:'✓',current:'●',upcoming:'🔒'}[st];
       const card=document.createElement('div');
@@ -507,7 +521,7 @@ function renderStageProgress(){
       list.appendChild(card);
     }
   }
-  renderWear(); renderAppt();
+  renderWear(); renderAppt(); renderTray();
 }
 
 function openStageDetail(n){
@@ -515,6 +529,7 @@ function openStageDetail(n){
   $('stageDetailTitle').textContent=`Etapa ${n} de ${STATE.totalStages}`;
   $('stageDetailText').textContent=done?'Esta etapa já foi concluída.':(cur?'Use por no mínimo 20 a 22 horas por dia para manter o cronograma previsto.':'Esta etapa ainda vai começar. Continue usando a placa atual normalmente.');
   $('stageDetailAction').style.display=cur?'block':'none';
+  $('chipDur').textContent='Duração: '+stageDur(n)+' dias';
   $('stageDetailImg').className='hero-img '+STAGE_IMGS[(n-1)%STAGE_IMGS.length];
   openScreen('stage');
 }
@@ -522,10 +537,10 @@ function openStageDetail(n){
 async function completeCurrentStage(){
   if(STATE.currentStage>=STATE.totalStages){ alert('Parabéns! Você concluiu a última etapa 🎉'); return; }
   if(!confirm(`Concluir a etapa ${STATE.currentStage} e passar para a ${STATE.currentStage+1}?`)) return;
-  STATE.currentStage++;
+  STATE.currentStage++; STATE.stageStart=dayKey(new Date());
   renderStageProgress();
   const client=initSupabase();
-  if(client){ try{ const {data:{session}}=await client.auth.getSession(); if(session) await client.from('profiles').upsert({id:session.user.id,current_stage:STATE.currentStage}); }catch(e){} }
+  if(client){ try{ const {data:{session}}=await client.auth.getSession(); if(session) await client.from('profiles').upsert({id:session.user.id,current_stage:STATE.currentStage,stage_start:STATE.stageStart}); }catch(e){} }
   openScreen('stageslist');
 }
 
@@ -554,6 +569,9 @@ async function handleSignup(){
   let currentStage = parseInt(document.getElementById('signupCurrentStage').value) || 1;
   if(currentStage < 1) currentStage = 1;
   if(currentStage > totalStages) currentStage = totalStages;
+  const daysUsed=Math.max(0,parseInt(document.getElementById('signupDaysUsed').value)||0);
+  const stageDays=(document.getElementById('signupStageDays').value.match(/\d+/g)||['10','20']).join(',');
+  const sd=new Date(); sd.setDate(sd.getDate()-daysUsed); const stageStart=dayKey(sd);
   const errEl = document.getElementById('signupError');
   errEl.textContent = '';
   const client = initSupabase();
@@ -565,7 +583,7 @@ async function handleSignup(){
   btn.disabled = false; btn.textContent = 'Concluir Cadastro';
   if(error){ errEl.textContent = error.message; return; }
   if(data.user){
-    try{ await client.from('profiles').upsert({id: data.user.id, patient_name: name || 'Paciente', doctor_name: doctor, total_stages: totalStages, current_stage: currentStage}); }catch(e){}
+    try{ await client.from('profiles').upsert({id: data.user.id, patient_name: name || 'Paciente', doctor_name: doctor, total_stages: totalStages, current_stage: currentStage, stage_days: stageDays, stage_start: stageStart}); }catch(e){}
   }
   errEl.style.color = 'var(--accent)';
   errEl.textContent = 'Conta criada! Se a confirmação por e-mail estiver ativa no seu projeto, confirme antes de entrar.';
@@ -670,7 +688,19 @@ function renderWear(){
   set('statPlate',STATE.currentStage+'/'+STATE.totalStages); set('statToday',hm(s)); set('statLeft',left?hm(left):'meta ok ✓');
   set('homeWearTxt',hm(s)); set('homeWearSub',plate+' · '+(left?'faltam '+hm(left):'meta de 20h atingida'));
   ['timerRing','homeRing'].forEach(id=>{ const e=$(id); if(e) e.setAttribute('stroke-dasharray',pct.toFixed(1)+',100'); });
-  renderBars();
+  renderBars(); renderTray();
+}
+function stageDur(n){ const a=(STATE.stageDays||'10,20').split(',').map(x=>parseInt(x)).filter(x=>x>0); const r=a.length?a:[10,20]; return r[(n-1)%r.length]; }
+function daysOnStage(){ if(!STATE.stageStart) return 0; return Math.max(0,Math.round((new Date(dayKey(new Date())+'T00:00:00')-new Date(STATE.stageStart+'T00:00:00'))/86400000)); }
+function renderTray(){
+  const dur=stageDur(STATE.currentStage), used=daysOnStage(), left=dur-used, day=Math.min(used+1,dur);
+  const sw=new Date((STATE.stageStart||dayKey(new Date()))+'T00:00:00'); sw.setDate(sw.getDate()+dur);
+  const set=(id,v)=>{ const e=$(id); if(e) e.textContent=v; };
+  const dd=left===1?'dia':'dias';
+  set('trayDayTxt','Dia '+day+' de '+dur);
+  set('trayLeftTxt',left>0?'troca em '+left+' '+dd+' ('+sw.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+')':'hora de trocar a placa!');
+  set('traySubHome',left>0?'Dia '+day+' de '+dur+' · troca em '+left+' '+dd:'Hora de trocar a placa!');
+  const b=$('trayBar'); if(b) b.style.width=Math.min(100,day/dur*100)+'%';
 }
 function renderAppt(){
   const doc=($('nameDoctor').textContent||'').trim()||'Dra. Mirna Liz';
